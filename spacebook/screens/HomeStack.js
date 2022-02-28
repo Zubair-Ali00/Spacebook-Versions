@@ -10,6 +10,7 @@ import MyPage from '../Pages/MyPage';
 import Signup from '../Pages/Signup';
 import Login from '../Pages/Login';
 import GetPost from '../Pages/GetPost';
+import Drafts from '../Pages/DraftsPage';
 
 import FriendPage from '../Pages/FriendPage';
 import ViewFriendsStack from './ViewFriendsStack';
@@ -57,6 +58,7 @@ function HomeStack(){
             } }} component={GetPost}/>
           
           <Stack.Screen name="ViewFriends" options={{ title:"Search Friends", headerShown: false }} component={ViewFriendsStack} />
+          <Stack.Screen name="Drafts" options={{ title:"All Drafts", headerShown: false }} component={Drafts} />
         </Stack.Navigator>
       </NavigationContainer>
     );

@@ -97,6 +97,9 @@ function add_post(id, token, textt){
 }
 
 
+    
+
+
 function AddPost(props) {
   //const [info, setInfo] = useState({});
 
@@ -158,9 +161,34 @@ function AddPost(props) {
   }, []);
 
  
+  const add_draft = async(id,textt) => {
+    const new_draft = {
+      user_id: id,
+      text: textt
+    }
+
+    try{    
+      let data = await AsyncStorage.getItem("drafts");
+
+      if (data!=null)
+      {
+        const arr = JSON.parse(data)
+        arr.push(new_draft)
+        await AsyncStorage.setItem("drafts", JSON.stringify(arr)); 
+        
+      }else{
+        const arr = [new_draft]
+        await AsyncStorage.setItem("drafts", JSON.stringify(arr)); 
+      }
+
+      //var auth = JSON.parse(data)
+                          
+    }catch(err){
+      console.log(err)
+    }
+  }     
   
 
-  
     return (
       <View>
 
@@ -216,6 +244,13 @@ function AddPost(props) {
             navigation.goBack() 
             }}>
             <Text style={styles.pressText}>Add</Text>
+          </Pressable>
+
+          <Pressable style={styles.button}  onPress={() => {
+            add_draft(props.user, text)
+            navigation.goBack()
+            }}>
+            <Text style={styles.pressText}>Save</Text>
           </Pressable>
 
           <Pressable style={styles.button}  onPress={() => navigation.goBack()}>

@@ -6,6 +6,7 @@ import {useRoute} from '@react-navigation/native'
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
 import EditPost from '../components/editPost';
 import AddPost from '../components/addPost';
+import EditDraft from '../components/editDraft';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -96,7 +97,6 @@ function GetPost({navigation}) {
   const abortController = new AbortController();
 
 
-
   useEffect(() => {
           
     const page = async () => {
@@ -129,9 +129,20 @@ function GetPost({navigation}) {
   }, []);
 
 
-
+  if(route.params.action == 'draft'){
+    return (
+      <View style={styles.postUpdate}>
+        <EditDraft
+          first_name={route.params.first_name}
+          last_name={route.params.last_name}
+          text={route.params.post}
+          token={route.params.token}
+          
+        />
+        </View>
+    );
   
-
+  }
   if (route.params.action != "add"){
     return (
       <View style={styles.postUpdate}>

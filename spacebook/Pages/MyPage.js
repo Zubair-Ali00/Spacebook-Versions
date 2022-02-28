@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     //justifyContent: 'space-between'
   },
   scroll:{
-    paddingBottom: "2%",
+    paddingBottom: 2,
     width: '100%',
   },
   scroll1:{
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#C3E6FF',
     borderRadius: 20,
     width: '50%', 
-    height: 30,
-    top: '2%'
+    height: 40,
+    top: 5
   },
   top2:{
     flexDirection: 'row',
@@ -116,9 +116,6 @@ function MyPage({route}) {
     });
 
     return () => {
-      // Clear setInterval in case of screen unmount
-      //clearTimeout(interval);
-      // Unsubscribe for the focus Listener
       unsubscribe;
       abortController.abort()
     };
@@ -136,6 +133,9 @@ function MyPage({route}) {
         var auth = JSON.parse(data)
         //console.log(JSON.parse(auth))
         //console.log(auth.id)
+
+        let data2 = await AsyncStorage.getItem("drafts");
+        var drafts = JSON.parse(data2)        
 
         setAuth(auth);
 
@@ -238,6 +238,10 @@ function MyPage({route}) {
 
         <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => navigation.navigate('ViewFriends')}>
               <Text style={[styles.pressText, {color: '#e86868'}]}>View Friends</Text>
+        </Pressable>
+
+        <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => navigation.navigate('Drafts')}>
+              <Text style={[styles.pressText, {color: '#689be8'}]}>Drafts</Text>
         </Pressable>
         
         <Pressable style={styles.button} onPress={() => navigation.navigate('GetPost', {                            
