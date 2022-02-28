@@ -13,21 +13,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(39, 154, 241, 0.98)',    
     flexDirection: 'column',
     alignItems: 'center',
+    width: '100%'
     //justifyContent: 'space-between'
   },
   scroll:{
-    paddingBottom: "100%",
+    paddingBottom: "2%",
     paddingLeft: 30,
     paddingRight: 30,
     width: '100%'
   },
   top:{
     flexDirection: 'row',
-    top: '13%',
+    top: 10,
     backgroundColor: '#C3E6FF',
     borderRadius: 20,
     width: '40%', 
-    height: '5%',
+    height: 30,
   },
   button:{
     flex: 1,
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   posts:{
     backgroundColor: 'white',
     width: '100%',
-    top: '8%',
+    top: 20,
     alignItems: 'center',
     borderTopEndRadius: 20,
     borderTopStartRadius : 20,
@@ -65,7 +66,10 @@ function FriendPage({navigation}) {
 
   const [det, setDet] = useState([]);
 
-  
+  const [loading, setLoading] = useState(true)
+
+
+  const [r, setR] = useState(true)
   
   useEffect (() =>
   {
@@ -77,9 +81,10 @@ function FriendPage({navigation}) {
         //console.log(auth.id)
 
         setAuth(auth);
-
+                
         if(Number.isInteger(auth.id)){
           setLoadingT(false);
+           
         }
       }catch(err) {
         console.log(err)
@@ -91,7 +96,7 @@ function FriendPage({navigation}) {
     return function cleanup(){
       abortController.abort()
     }
-  });
+  },[]);
 
   //console.log(id)
   //token = route.params.token;
@@ -103,12 +108,17 @@ function FriendPage({navigation}) {
                     headers: {
                       'Accept': 'application/json',
                       'Content-Type': 'application/json',
-                      'X-Authorization': token,
+                      'X-Authorization': auth.token,
                     }
                   })
                   .then((response) => response.json())
-                  .then((text) => {          
-                    setDet(text)
+                  .then((text) => {    
+                    if(loading){                      
+                      setDet(text)
+                    } else{
+                      console.log("fetched")
+                    }
+                    
                   })
                   .catch(function (res){
                     console.log(res)
@@ -120,7 +130,7 @@ function FriendPage({navigation}) {
   return function cleanup(){
     abortController.abort()
   }
-  },[loadingT]);
+  },[det, loadingT]);
 
   useEffect(() => {
     const abortController = new AbortController()
@@ -130,13 +140,14 @@ function FriendPage({navigation}) {
                     headers: {
                       'Accept': 'application/json',
                       'Content-Type': 'application/json',
-                      'X-Authorization': token,
+                      'X-Authorization': auth.token,
                     }
                   })
                   .then((response) => response.json())
                   .then((text) => {
-                    setPosts(text);                    
-                      //console.log(posts)
+                    setPosts(text);   
+                    setLoading(false)                 
+                    //console.log("fetching")
                   })
                   .catch(function (res){
                     console.log(res)
@@ -149,8 +160,48 @@ function FriendPage({navigation}) {
     return function cleanup() {
       abortController.abort()
     }
-  }, [det , ref]);
+  }, [det , ref, r]);
 
+  useEffect(() => {
+    // Subscribe for the focus Listener
+    const unsubscribe = navigation.addListener('focus', async() => {
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+id+'/post', {
+                    method: 'GET',
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      'X-Authorization': auth.token,
+                    }
+                  })
+                  .then((response) => response.json())
+                  .then((text) => {
+                    setPosts(text);                                       
+                    //console.log("fetching")
+                  })
+                  .catch(function (res){
+                    console.log(res)
+                  });
+    });
+
+    return () => {
+      // Clear setInterval in case of screen unmount
+      //clearTimeout(interval);
+      // Unsubscribe for the focus Listener
+      unsubscribe;
+      abortController.abort()
+    };
+  }, [navigation,det]);
+
+
+  if(loading){
+    return (
+      <View>
+        <Text>
+          Loading..
+        </Text>
+      </View>
+    );
+  };
 
   
   return (  
@@ -173,6 +224,7 @@ function FriendPage({navigation}) {
           </Pressable>
 
           <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => {
+            
             if (ref == true){
               setRef(false)
             }else{
@@ -187,7 +239,7 @@ function FriendPage({navigation}) {
         <View style={styles.posts}>
 
         <ScrollView contentContainerStyle={styles.scroll}>
-            {posts.map((post) => (          
+        {posts.map((post) => (          
                 <SpPost 
                 key={post.post_id}
                 post={post.post_id}
@@ -202,7 +254,7 @@ function FriendPage({navigation}) {
                 user_id={auth.id}   
                 token={auth.token}        
                 />
-            ))}      
+            ))}  
         </ScrollView>
 
         </View>

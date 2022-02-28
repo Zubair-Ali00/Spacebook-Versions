@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput,Text, View, Button, StatusBar, StyleSheet, DrawerLayoutAndroidBase, Pressable } from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+import { TextInput,Text, View, Button, StatusBar, StyleSheet, Pressable } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -99,7 +96,7 @@ export default function Login ({navigation}){
 
     getAuth();
 
-  });
+  }, []);
   
   const go = async () => {
 
@@ -125,7 +122,7 @@ export default function Login ({navigation}){
                 }
                 
                 const save = async() => {
-                  try{
+                  try{    
                     await AsyncStorage.setItem("userAuth", JSON.stringify(auth));                     
                   }catch(err){
                     console.log(err)

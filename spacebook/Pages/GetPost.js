@@ -3,10 +3,7 @@ import { Text, TextInput, View,Button, StyleSheet, Pressable } from 'react-nativ
 
 import {useRoute} from '@react-navigation/native'
 
-import SpHeader from '../components/header'
-import SpPost from '../components/post'
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
-import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 import EditPost from '../components/editPost';
 import AddPost from '../components/addPost';
 
@@ -95,12 +92,13 @@ function GetPost({navigation}) {
   var postt = route.params.post;
 
   var token = route.params.token;
-  //console.log(post)
-  //token = route.params.token;
 
-  //console.log("user is" + id + "post id" + postt)
+  const abortController = new AbortController();
+
+
+
   useEffect(() => {
-    const abortController = new AbortController();
+          
     const page = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+id+'/post/'+postt, {
                     method: 'GET',
@@ -112,8 +110,8 @@ function GetPost({navigation}) {
                   })
                   .then((response) => response.json())
                   .then((text) => {                    
-                      setPost(text);                
-                      //console.log(post)
+                      setPost(text);    
+                      //console.log(text)
                   })
                   .catch(function (res){
                     console.log(res)
@@ -128,7 +126,7 @@ function GetPost({navigation}) {
     return function cleanup(){
       abortController.abort()
     }
-  }, [route]);
+  }, []);
 
 
 
@@ -136,12 +134,14 @@ function GetPost({navigation}) {
 
   if (route.params.action != "add"){
     return (
+      <View style={styles.postUpdate}>
         <EditPost
           first_name={post.author.first_name}
           last_name={post.author.last_name}
           text={post.text}
           token={token}
         />
+        </View>
     );
   }else{
     return (

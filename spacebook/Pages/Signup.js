@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput,Text, View, Button, StatusBar, Alert, StyleSheet, DrawerLayoutAndroidBase, Pressable } from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TextInput,Text, View, Button, StatusBar, Alert, StyleSheet, Pressable } from 'react-native';
 
 const styles = StyleSheet.create({
   center: {

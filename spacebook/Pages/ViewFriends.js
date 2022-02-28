@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     shadowColor: '#52006A',
     borderRadius: 20,
     flexDirection: 'row',
-    width: 200, 
+    width: '70%', 
     backgroundColor: "white",
     alignItems: 'center',
     marginTop: '10%', 
@@ -98,7 +98,7 @@ function ViewFriends ({navigation}){
     return function cleanup(){
       abortController.abort()
     }
-  });
+  },[]);
 
 
   useEffect(() => {

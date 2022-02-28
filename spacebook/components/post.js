@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
     post:{
-        width: '90%',
+        width: '100%',
         backgroundColor: '#C0E2FB',
         alignItems: 'center',
         padding: 5,
@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     post3:{
-        flexDirection: 'row',        
+        flexDirection: 'row',   
+        width: '100%'     
     },
     button: {
         flex: 1,
@@ -100,7 +101,6 @@ function delete_post(user, post, token) {
             .then((response) => response.text())
             .then((text) => {
                 //do some this if you have not liked
-                console.log(text)
             })
             .catch(function (res){
               console.log(res)
@@ -296,7 +296,7 @@ function spPost (props) {
     
                         <Pressable style={[styles.button, {borderBottomEndRadius: 0, borderBottomStartRadius: 20}]}  onPress={() => navigation.navigate('GetPost', {
                                     post: props.post,
-                                    user: props.user,
+                                    user: props.user_id,
                                     token : props.token
                                 })}>
                             <Text >Edit</Text>

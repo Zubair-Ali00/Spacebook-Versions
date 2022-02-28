@@ -96,7 +96,7 @@ const ViewFriends = ({navigation}) => {
     return function cleanup(){
       abortController.abort()
     }
-  });
+  },[]);
 
   useEffect(() => {
   const page = async () => {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Pressable, Alert } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
 
@@ -22,7 +21,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     post: {        
-        width: 260,
+        width: '100%',
         backgroundColor: '#C0E2FB', 
         padding: 5,
         borderRadius: 20,

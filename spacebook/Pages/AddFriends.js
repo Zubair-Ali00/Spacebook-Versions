@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Pressable, ScrollView, Alert } from 'react-native';
+import { Text, TextInput, View, StyleSheet, Pressable, ScrollView } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 
 import SpRequest from '../components/request';
@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
   scroll:{
     paddingBottom: 50,
     paddingLeft: 30,
-    paddingRight: 30
+    paddingRight: 30,
+    width: '100%'
   },
   users: {
     top: 50,
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     shadowColor: '#52006A',
     borderRadius: 20,
     flexDirection: 'row',
-    width: 200, 
+    width: '70%', 
     backgroundColor: "white",
     alignItems: 'center',
     marginTop: '10%', 
@@ -97,7 +98,7 @@ const AddFriends = ({navigation}) => {
     return function cleanup(){
       abortController.abort()
     }
-  });
+  },[]);
 
   useEffect(() => {
   const page = async () => {

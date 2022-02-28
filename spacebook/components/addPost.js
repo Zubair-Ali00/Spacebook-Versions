@@ -4,11 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import {useRoute} from '@react-navigation/native'
 
-import SpHeader from '../components/header'
-import SpPost from '../components/post'
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
-import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const styles = StyleSheet.create({
@@ -90,8 +88,8 @@ function add_post(id, token, textt){
         })
     })
     .then((response) => response.text())
-    .then((text) => {     
-        //console.log(text)                
+    .then((text) => {          
+      //console.log(text)                
     })
     .catch(function (res){
       console.log(res)

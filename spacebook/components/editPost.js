@@ -4,10 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import {useRoute} from '@react-navigation/native'
 
-import SpHeader from '../components/header'
-import SpPost from '../components/post'
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
-import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
+
+import SpHeader from '../components/header'
+
 
 const styles = StyleSheet.create({
   post:{
@@ -162,36 +162,13 @@ function EditPost(props) {
       })
       .then((response) => response.text())
       .then((text) => {     
-          //console.log(text)               
+          //console.log(text)                     
           navigation.goBack()               
       })
       .catch(function (res){
         console.log(res)
       });
   }
-
-  const add_post = () => {
-    const xhttp = fetch('http://localhost:3333/api/1.0.0/user/'+id+'/post', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-Authorization': props.token,
-        },
-        body: JSON.stringify({
-            text: text
-          })
-      })
-      .then((response) => response.text())
-      .then((text) => {     
-          //console.log(text)               
-          navigation.goBack()               
-      })
-      .catch(function (res){
-        console.log(res)
-      });
-  }
-
   
     return (
       <View>

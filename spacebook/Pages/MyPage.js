@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View,ScrollView,Pressable, StyleSheet } from 'react-native';
 
-import {useRoute} from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 
 import SpHeader from '../components/header'
 import SpPost from '../components/post'
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -18,26 +16,28 @@ const styles = StyleSheet.create({
     //justifyContent: 'space-between'
   },
   scroll:{
-    paddingBottom: "100%",
-    paddingLeft: 30,
-    paddingRight: 30,
-    width: '100%'
+    paddingBottom: "2%",
+    width: '100%',
+  },
+  scroll1:{
+    width: '70%',
+    height: '100%'
   },
   top:{
     flexDirection: 'row',
-    top: '8%',
     backgroundColor: '#C3E6FF',
     borderRadius: 20,
     width: '50%', 
-    height: '6%',
+    height: 30,
+    top: '2%'
   },
   top2:{
     flexDirection: 'row',
-    top: '2%',
+    top: 5,
     backgroundColor: '#c3e1ff',
     borderRadius: 20,
     width: '50%', 
-    height: '6%',
+    height: 30,
   },
   button:{
     flex: 1,
@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
   posts:{
     backgroundColor: 'white',
     width: '100%',
-    top: '6%',
+    height: '100%',
+    top: 20,
     alignItems: 'center',
     borderTopEndRadius: 20,
     borderTopStartRadius : 20,
@@ -79,18 +80,50 @@ function MyPage({route}) {
   
   const [loading, setLoading] = useState(true);
   const [loadingT, setLoadingT] = useState(true);
-  const[ref, setRef] = useState(true);
+
+  var r = true;
+  const[ref, setRef] = useState(r);
 
   const [auth, setAuth] = useState([]);
   const [det, setDet] = useState([]);
 
 
+  
+
   const navigation = useNavigation();
 
   //const route = useRoute();
-  const abortController = new AbortController();
+  const abortController = new AbortController();  
+  
+  useEffect(() => {
+    // Subscribe for the focus Listener
+    const unsubscribe = navigation.addListener('focus', async() => {
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+auth.id+'/post', {
+                    method: 'GET',
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                      'X-Authorization': auth.token,
+                    }
+                  })
+                  .then((response) => response.json())
+                  .then((text) => {          
+                      setPosts(text);                                                              
+                  })
+                  .catch(function (res){
+                    console.log(res)
+                  });
+    });
 
-
+    return () => {
+      // Clear setInterval in case of screen unmount
+      //clearTimeout(interval);
+      // Unsubscribe for the focus Listener
+      unsubscribe;
+      abortController.abort()
+    };
+  }, [navigation,det]);
+  
   
   //var id = route.params.text.id;
   //var token = route.params.text.token;
@@ -115,7 +148,11 @@ function MyPage({route}) {
     }
 
     getAuth();
-  });
+
+    return function cleanup(){
+      abortController.abort()
+    }
+  },[]);
   
   useEffect(() => {
     
@@ -218,63 +255,66 @@ function MyPage({route}) {
 
       <View style={styles.posts}>
 
-      <View style={styles.top2}>
+        <View style={styles.top2}>
 
-      <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => {
-        if (ref == true){
-          setRef(false)
-        }else{
-          setRef(true)
-        }
-      }}>
-            <Text style={[styles.pressText, {color: '#e86868'}]}>Refresh</Text>
-      </Pressable>
+          <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => {
+            if (ref == true){
+              setRef(false)
+            }else{
+              setRef(true)
+            }
+          }}>
+                <Text style={[styles.pressText, {color: '#e86868'}]}>Refresh</Text>
+          </Pressable>
 
-      <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() =>  {
-        const auth = {
-          id: 0,
-          token: 0
-        }
-        
-        const save = async() => {
-          try{
-            await AsyncStorage.setItem("userAuth", JSON.stringify(auth));                     
-          }catch(err){
-            console.log(err)
-          }
-        }     
-        
-        save();
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Login'}]
-        })
-        }}>
-            <Text style={[styles.pressText, {color: '#e86868'}]}>Logout</Text>
-      </Pressable>
+          <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() =>  {
+            const auth = {
+              id: 0,
+              token: 0
+            }
+            
+            const save = async() => {
+              try{
+                await AsyncStorage.setItem("userAuth", JSON.stringify(auth));                     
+              }catch(err){
+                console.log(err)
+              }
+            }     
+            
+            save();
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Login'}]
+            })
+            }}>
+                <Text style={[styles.pressText, {color: '#e86868'}]}>Logout</Text>
+          </Pressable>
 
-      </View>
+        </View>
 
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {posts.map((post) => (          
-            <SpPost 
-              key={post.post_id}
-              post={post.post_id}
-              user_id={auth.id}
-              user={true}
-              first_name={post.author.first_name}
-              last_name={post.author.last_name}
-              time={post.timestamp}
-              text={post.text}
-              likes={post.numLikes}
-              author={post.author.user_id}    
-              token={auth.token}      
+        <View style={styles.scroll1}>
+          <ScrollView contentContainerStyle={styles.scroll}>
+
+            {posts.map((post) => (
+            <SpPost
+            key={post.post_id}
+            post={post.post_id}
+            user_id={auth.id}
+            user={true}
+            first_name={post.author.first_name}
+            last_name={post.author.last_name}
+            time={post.timestamp}
+            text={post.text}
+            likes={post.numLikes}
+            author={post.author.user_id}
+            token={auth.token}
             />
-        ))}
+            ))}
 
-        
 
-      </ScrollView>
+            
+            </ScrollView>
+        </View>
 
       </View>
         

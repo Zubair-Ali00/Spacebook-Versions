@@ -4,6 +4,7 @@ import { Text, View, StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   center: { 
     alignItems: 'center',
+
   }, 
   image:{
     top: '20%',
@@ -13,8 +14,9 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
   text:{
-    top: '30%',
-    fontWeight: 'bold'
+    marginTop: '30%',
+    fontWeight: 'bold',
+    botton: '20%'
   }
 })
 
