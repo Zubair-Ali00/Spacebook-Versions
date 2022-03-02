@@ -1,49 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Pressable, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Text, TextInput, View, StyleSheet, Pressable, ScrollView } from 'react-native'
 
-import SpFriend from '../components/Friends';
+import SpFriend from '../components/Friends'
 
-import {useRoute} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native'
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center',
     backgroundColor: 'rgba(39, 154, 241, 0.98)',
-    height: '100%' 
+    height: '100%'
   },
-  friends:{
-    //position: 'absolute',
-    paddingBottom: 50,
-    paddingLeft: 30,
-    paddingRight: 30
+  friends: {
+    paddingBottom: 2,
+    width: '100%'
   },
-  searchbar:{
+  scroll: {
+    width: '70%',
+    height: '100%'
+  },
+  searchbar: {
     elevation: 20,
     shadowColor: '#52006A',
     borderRadius: 20,
     flexDirection: 'row',
-    width: '70%', 
-    backgroundColor: "white",
+    width: '70%',
+    backgroundColor: 'white',
     alignItems: 'center',
-    marginTop: '10%', 
-    height: "7%",
+    marginTop: '10%',
+    height: '7%'
   },
-  input:{
-    flex: 5,  
-    paddingLeft: 20,    
+  input: {
+    flex: 5,
+    paddingLeft: 20
   },
-  button:{
+  button: {
     flex: 3,
     backgroundColor: '#F1D0C5',
-    height: '100%',    
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     borderTopEndRadius: 20,
-    borderBottomEndRadius: 20,
+    borderBottomEndRadius: 20
   },
-  top:{
+  top: {
     flexDirection: 'row',
     backgroundColor: '#F1D0C5',
     borderRadius: 20,
@@ -52,134 +54,123 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     top: '5%'
   },
-  button2:{
+  button2: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 })
 
+function ViewFriends ({ navigation }) {
+  const [search, setSearch] = useState([])
+  const [term, setTerm] = useState('')
 
+  const [st, setSt] = useState('')
 
-function ViewFriends ({navigation}){
-  const [search, setSearch] = useState([]);
-  const [term, setTerm] = useState("");
+  const route = useRoute()
 
-  const [st, setSt] = useState("");
+  const abortController = new AbortController()
 
-  const route = useRoute();
-  
+  const [loadingT, setLoadingT] = useState(true)
+  const [auth, setAuth] = useState([])
+  useEffect(() => {
+    const getAuth = async () => {
+      try {
+        const data = await AsyncStorage.getItem('userAuth')
+        const auth = JSON.parse(data)
+        // console.log(JSON.parse(auth))
+        // console.log(auth.id)
 
-  const abortController = new AbortController();
+        setAuth(auth)
 
-  const [loadingT, setLoadingT] = useState(true);
-  const [auth, setAuth] = useState([]);
-  useEffect (() =>
-  {
-    const getAuth = async() =>{
-      try{
-        let data = await AsyncStorage.getItem("userAuth");
-        var auth = JSON.parse(data)
-        //console.log(JSON.parse(auth))
-        //console.log(auth.id)
-
-        setAuth(auth);
-
-        if(Number.isInteger(auth.id)){
-          setLoadingT(false);
+        if (Number.isInteger(auth.id)) {
+          setLoadingT(false)
         }
-      }catch(err) {
+      } catch (err) {
         console.log(err)
       }
     }
 
-    getAuth();
+    getAuth()
 
-    return function cleanup(){
+    return function cleanup () {
       abortController.abort()
     }
-  },[]);
-
+  }, [])
 
   useEffect(() => {
-    
-    if (term.length <= 0){
-      term == ""
+    if (term.length <= 0) {
+      term === ''
     }
-    
+
     const page = async () => {
-      const xhttp = await fetch('http://localhost:3333/api/1.0.0/search?q='+term+'&search_in=friends', {
-                    method: 'GET',
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'X-Authorization': auth.token,
-                    }
-                  })
-                  .then((response) => response.json())
-                  .then((text) => {
-                      setSearch(text);                 
-                  })
-                  .catch(function (res){
-                    //console.log(res)
-                  });
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/search?q=' + term + '&search_in=friends', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': auth.token
+        }
+      })
+        .then((response) => response.json())
+        .then((text) => {
+          setSearch(text)
+        })
+        .catch(function (res) {
+          // console.log(res)
+        })
     }
 
-    page();
+    page()
 
-    return function cleanup(){
+    return function cleanup () {
       abortController.abort()
     }
-
-}, [term, loadingT, route]);
-
+  }, [term, loadingT, route])
 
   return (
-  
-    
+
     <View style={styles.center}>
 
-        <View style={styles.top}>
+      <View style={styles.top}>
 
-          <Pressable style={[styles.button2, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => navigation.goBack()}>
-                <Text style={[styles.pressText, {color: '#e86868', justifyContent: 'center'}]}>Home</Text>
-          </Pressable>
+        <Pressable style={[styles.button2, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => navigation.goBack()}>
+          <Text style={[styles.pressText, { color: '#e86868', justifyContent: 'center' }]}>Home</Text>
+        </Pressable>
 
-        </View>
+      </View>
 
-        
+      <View style={styles.searchbar}>
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => setSt(text)}
+              // value={number}
+          placeholder='name..'
+          keyboardType='default'
+        />
 
-        <View style={styles.searchbar}>
-          <TextInput
-              style={styles.input}
-              onChangeText={(text) => setSt(text)}
-              //value={number}
-              placeholder="name.."
-              keyboardType='default'
-          />
+        <Pressable style={styles.button} onPress={() => setTerm(st)}>
+          <Text style={styles.pressText}>Search</Text>
+        </Pressable>
 
-          <Pressable style={styles.button} onPress={() => setTerm(st)}>
-            <Text style={styles.pressText}>Search</Text>
-          </Pressable>
+      </View>
 
-        </View>
-
-        <ScrollView contentContainerStyle={styles.friends} >
+      <View style={styles.scroll}>
+        <ScrollView contentContainerStyle={styles.friends}>
           {search.map((user) => (
             <SpFriend
               key={user.user_id}
               user={user.user_id}
-              first_name= {user.user_familyname}
+              first_name={user.user_familyname}
               last_name={user.user_givenname}
               token={auth.token}
-            />           
+            />
           ))}
         </ScrollView>
-        
-
+      </View>
 
     </View>
-  );
+  )
 }
 
-export default ViewFriends;
+export default ViewFriends

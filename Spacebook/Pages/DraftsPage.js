@@ -1,61 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View,ScrollView,Pressable, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Text, View, ScrollView, Pressable, StyleSheet } from 'react-native'
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'
 
 import SpHeader from '../components/header'
 import SpPost from '../components/post'
-import SpDraft from '../components/draft';
+import SpDraft from '../components/draft'
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
   center: {
-    backgroundColor: 'rgba(39, 154, 241, 0.98)',    
+    backgroundColor: 'rgba(39, 154, 241, 0.98)',
     flexDirection: 'column',
-    alignItems: 'center',
-    //justifyContent: 'space-between'
+    alignItems: 'center'
+    // justifyContent: 'space-between'
   },
-  scroll:{
-    paddingBottom: "2%",
-    width: '100%',
+  scroll: {
+    paddingBottom: '2%',
+    width: '100%'
   },
-  scroll1:{
+  scroll1: {
     width: '70%',
     height: '100%'
   },
-  top:{
+  top: {
     flexDirection: 'row',
     backgroundColor: '#C3E6FF',
     borderRadius: 20,
-    width: '50%', 
+    width: '50%',
     height: 30,
     top: '2%'
   },
-  top2:{
+  top2: {
     flexDirection: 'row',
     top: 5,
     backgroundColor: '#c3e1ff',
     borderRadius: 20,
-    width: '50%', 
-    height: 30,
+    width: '50%',
+    height: 30
   },
-  button:{
+  button: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  posts:{
+  posts: {
     backgroundColor: 'white',
     width: '100%',
     height: '100%',
     top: 20,
     alignItems: 'center',
     borderTopEndRadius: 20,
-    borderTopStartRadius : 20,
+    borderTopStartRadius: 20,
     paddingBottom: '30%'
   },
-  message:{
+  message: {
     backgroundColor: 'white',
     width: '40%',
     alignItems: 'center',
@@ -63,189 +63,188 @@ const styles = StyleSheet.create({
     height: '5%',
     borderRadius: 20
   },
-  button2:{
+  button2: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 })
 
-function Drafts({route}) {
+function Drafts ({ route }) {
+  const [auth, setAuth] = useState([])
+  const [drafts, setDrafts] = useState([])
+  const [det, setDet] = useState([])
+  const [ref, setRef] = useState(true)
 
-  const [auth, setAuth] = useState([]);
-  const [drafts, setDrafts] = useState([]);
-  const [det, setDet] = useState([]);
-  const[ref, setRef] = useState(true);
-  
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
-  const abortController = new AbortController(); 
-  
-  
-  
-  useEffect (() =>
-  {
-    const getAuth = async() =>{
-      try{
-        let data = await AsyncStorage.getItem("userAuth");
-        var auth = JSON.parse(data)
-        //console.log(JSON.parse(auth))
-        //console.log(auth.id)
-        setAuth(auth);
+  const abortController = new AbortController()
 
-        let data2 = await AsyncStorage.getItem("drafts");
-        let draftss = JSON.parse(data2)
+  const img = route.params.img
 
-        if (data2!=null){
-            setDrafts(draftss)
-        }else{
-            setDrafts([])
+  useEffect(() => {
+    const getAuth = async () => {
+      try {
+        const data = await AsyncStorage.getItem('userAuth')
+        const auth = JSON.parse(data)
+        // console.log(JSON.parse(auth))
+        // console.log(auth.id)
+        setAuth(auth)
+
+        const data2 = await AsyncStorage.getItem('drafts')
+        const draftss = JSON.parse(data2)
+
+        if (data2 != null) {
+          setDrafts(draftss)
+        } else {
+          setDrafts([])
         }
 
-        
-
-        if(Number.isInteger(auth.id)){
-          setLoadingT(false);
+        if (Number.isInteger(auth.id)) {
+          setLoadingT(false)
         }
-      }catch(err) {
+      } catch (err) {
         console.log(err)
       }
     }
 
-    getAuth();
+    getAuth()
 
-    return function cleanup(){
+    return function cleanup () {
       abortController.abort()
     }
-  },[ref]);
-  
+  }, [ref])
+
   useEffect(() => {
-    
-    const details = async () => {          
-      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+auth.id, {
-                    method: 'GET',
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'X-Authorization': auth.token,
-                    }
-                  })
-                  .then((response) => response.json())
-                  .then((text) => {          
-                    setDet(text)
-                  })
-                  .catch(function (res){
-                    console.log(res)
-                  });
-  }
-
-  details();
-
-  return function cleanup(){
-    abortController.abort()
-  }
-},[auth]);
-
-useEffect(() => {
-  const unsubscribe = navigation.addListener('focus', async() => {
-    let data2 = await AsyncStorage.getItem("drafts");
-    let draftss = JSON.parse(data2)
-
-    if (data2!=null){
-        setDrafts(draftss)
-    }else{
-        setDrafts([])
+    const details = async () => {
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': auth.token
+        }
+      })
+        .then((response) => response.json())
+        .then((text) => {
+          setDet(text)
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
     }
-  });
 
-  return () => {
-    unsubscribe;
-    abortController.abort()
-  };
-}, [navigation,det, ref]);
-  
-  if(drafts.length<=0){
-    return (  
-  
+    details()
+
+    return function cleanup () {
+      abortController.abort()
+    }
+  }, [auth])
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const data2 = await AsyncStorage.getItem('drafts')
+      const draftss = JSON.parse(data2)
+
+      if (data2 != null) {
+        setDrafts(draftss)
+      } else {
+        setDrafts([])
+      }
+    })
+
+    return () => {
+      unsubscribe
+      abortController.abort()
+    }
+  }, [navigation, det, ref])
+
+  if (drafts.length <= 0) {
+    return (
+
       <View style={styles.center}>
-            <SpHeader
-            first_name={det.first_name}
-            last_name={det.last_name}
-          />
-  
-          <View style={styles.top}>
-            
-            <Pressable style={[styles.button2, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => navigation.goBack()}>
-                  <Text style={[styles.pressText, {color: '#e86868', justifyContent: 'center'}]}>Home</Text>
-            </Pressable>
-
-            <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => {
-                if (ref == true){
-                  setRef(false)
-                }else{
-                  setRef(true)
-                }
-              }}>
-              <Text style={[styles.pressText, {color: '#e86868'}]}>Refresh</Text>
-          </Pressable>
-  
-          </View>
-  
-          <View style={styles.posts}>
-  
-            <Text> You have no drafts </Text>
-  
-          </View>
-
-        </View>
-  
-    );
-  };
-
-  return (  
-  
-    <View style={styles.center}>
-          <SpHeader
+        <SpHeader
           first_name={det.first_name}
           last_name={det.last_name}
+          img={img}
         />
 
         <View style={styles.top}>
-          
-        <Pressable style={[styles.button2, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => navigation.goBack()}>
-                <Text style={[styles.pressText, {color: '#e86868', justifyContent: 'center'}]}>Home</Text>
-        </Pressable>
 
-        <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => {
-                if (ref == true){
-                  setRef(false)
-                }else{
-                  setRef(true)
-                }
-              }}>
-              <Text style={[styles.pressText, {color: '#e86868'}]}>Refresh</Text>
+          <Pressable style={[styles.button2, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => navigation.goBack()}>
+            <Text style={[styles.pressText, { color: '#e86868', justifyContent: 'center' }]}>Home</Text>
           </Pressable>
+
+          <Pressable
+            style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => {
+              if (ref === true) {
+                setRef(false)
+              } else {
+                setRef(true)
+              }
+            }}
+          >
+            <Text style={[styles.pressText, { color: '#e86868' }]}>Refresh</Text>
+          </Pressable>
+
         </View>
 
         <View style={styles.posts}>
 
-        <ScrollView contentContainerStyle={styles.scroll}>
-        {drafts.map((draft) => (          
-                <SpDraft 
-                key = {draft.user_id}
-                id = {draft.user_id}
-                token = {auth.token}
-                text = {draft.text}                  
-                />
-            ))}  
-        </ScrollView>
+          <Text> You have no drafts </Text>
 
         </View>
 
+      </View>
+
+    )
+  };
+
+  return (
+
+    <View style={styles.center}>
+      <SpHeader
+        first_name={det.first_name}
+        last_name={det.last_name}
+      />
+
+      <View style={styles.top}>
+
+        <Pressable style={[styles.button2, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => navigation.goBack()}>
+          <Text style={[styles.pressText, { color: '#e86868', justifyContent: 'center' }]}>Home</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => {
+            if (ref === true) {
+              setRef(false)
+            } else {
+              setRef(true)
+            }
+          }}
+        >
+          <Text style={[styles.pressText, { color: '#e86868' }]}>Refresh</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.posts}>
+
+        <ScrollView contentContainerStyle={styles.scroll}>
+          {drafts.map((draft) => (
+            <SpDraft
+              key={draft.user_id}
+              id={draft.user_id}
+              token={auth.token}
+              text={draft.text}
+            />
+          ))}
+        </ScrollView>
 
       </View>
 
-  );
+    </View>
+
+  )
 }
 
-export default Drafts;
+export default Drafts

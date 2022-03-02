@@ -1,60 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View,ScrollView,Pressable, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Text, View, ScrollView, Pressable, StyleSheet } from 'react-native'
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'
 
 import SpHeader from '../components/header'
 import SpPost from '../components/post'
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
   center: {
-    backgroundColor: 'rgba(39, 154, 241, 0.98)',    
+    backgroundColor: 'rgba(39, 154, 241, 0.98)',
     flexDirection: 'column',
-    alignItems: 'center',
-    //justifyContent: 'space-between'
+    alignItems: 'center'
+    // justifyContent: 'space-between'
   },
-  scroll:{
+  scroll: {
     paddingBottom: 2,
-    width: '100%',
+    width: '100%'
   },
-  scroll1:{
+  scroll1: {
     width: '70%',
     height: '100%'
   },
-  top:{
+  top: {
     flexDirection: 'row',
     backgroundColor: '#C3E6FF',
     borderRadius: 20,
-    width: '50%', 
+    width: '80%',
     height: 40,
     top: 5
   },
-  top2:{
+  top2: {
     flexDirection: 'row',
     top: 5,
     backgroundColor: '#c3e1ff',
     borderRadius: 20,
-    width: '50%', 
-    height: 30,
+    width: '50%',
+    height: 30
   },
-  button:{
+  button: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  posts:{
+  posts: {
     backgroundColor: 'white',
     width: '100%',
     height: '100%',
     top: 20,
     alignItems: 'center',
     borderTopEndRadius: 20,
-    borderTopStartRadius : 20,
+    borderTopStartRadius: 20,
     paddingBottom: '30%'
   },
-  message:{
+  message: {
     backgroundColor: 'white',
     width: '40%',
     alignItems: 'center',
@@ -67,231 +67,286 @@ const styles = StyleSheet.create({
 const getData = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem('@storage_Key')
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch(e) {
+    return jsonValue != null ? JSON.parse(jsonValue) : null
+  } catch (e) {
     // error reading value
   }
 }
 
+function MyPage ({ route }) {
+  // const [info, setInfo] = useState({});
+  const [posts, setPosts] = useState([])
 
-function MyPage({route}) {
-  //const [info, setInfo] = useState({});
-  const [posts,setPosts] = useState([]);  
-  
-  const [loading, setLoading] = useState(true);
-  const [loadingT, setLoadingT] = useState(true);
+  const [loading, setLoading] = useState(true)
+  const [loadingT, setLoadingT] = useState(true)
 
-  var r = true;
-  const[ref, setRef] = useState(r);
+  const r = true
+  const [ref, setRef] = useState(r)
 
-  const [auth, setAuth] = useState([]);
-  const [det, setDet] = useState([]);
+  const [auth, setAuth] = useState([])
+  const [det, setDet] = useState([])
 
+  const navigation = useNavigation()
 
-  
+  // const route = useRoute();
+  const abortController = new AbortController()
 
-  const navigation = useNavigation();
-
-  //const route = useRoute();
-  const abortController = new AbortController();  
-  
   useEffect(() => {
     // Subscribe for the focus Listener
-    const unsubscribe = navigation.addListener('focus', async() => {
-      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+auth.id+'/post', {
-                    method: 'GET',
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'X-Authorization': auth.token,
-                    }
-                  })
-                  .then((response) => response.json())
-                  .then((text) => {          
-                      setPosts(text);                                                              
-                  })
-                  .catch(function (res){
-                    console.log(res)
-                  });
-    });
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const xhttp = await fetch('http://192.168.237:3333/api/1.0.0/user/' + auth.id + '/post', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': auth.token
+        }
+      })
+        .then((response) => response.json())
+        .then((text) => {
+          setPosts(text)
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
+    })
 
     return () => {
-      unsubscribe;
+      unsubscribe
       abortController.abort()
-    };
-  }, [navigation,det]);
-  
-  
-  //var id = route.params.text.id;
-  //var token = route.params.text.token;
+    }
+  }, [navigation, det])
 
-  useEffect (() =>
-  {
-    const getAuth = async() =>{
-      try{
-        let data = await AsyncStorage.getItem("userAuth");
-        var auth = JSON.parse(data)
-        //console.log(JSON.parse(auth))
-        //console.log(auth.id)
+  // var id = route.params.text.id;
+  // var token = route.params.text.token;
 
-        let data2 = await AsyncStorage.getItem("drafts");
-        var drafts = JSON.parse(data2)        
+  useEffect(() => {
+    const getAuth = async () => {
+      try {
+        const data = await AsyncStorage.getItem('userAuth')
+        const auth = JSON.parse(data)
+        // console.log(JSON.parse(auth))
+        // console.log(auth.id)
 
-        setAuth(auth);
+        const data2 = await AsyncStorage.getItem('drafts')
+        const drafts = JSON.parse(data2)
 
-        if(Number.isInteger(auth.id)){
-          setLoadingT(false);
+        setAuth(auth)
+
+        if (Number.isInteger(auth.id)) {
+          setLoadingT(false)
         }
-      }catch(err) {
+      } catch (err) {
         console.log(err)
       }
     }
 
-    getAuth();
+    getAuth()
 
-    return function cleanup(){
+    return function cleanup () {
       abortController.abort()
     }
-  },[]);
-  
+  }, [])
+
   useEffect(() => {
-    
-    const details = async () => {          
-      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+auth.id, {
-                    method: 'GET',
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'X-Authorization': auth.token,
-                    }
-                  })
-                  .then((response) => response.json())
-                  .then((text) => {          
-                    setDet(text)
-                  })
-                  .catch(function (res){
-                    console.log(res)
-                  });
-  }
+    const details = async () => {
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': auth.token
+        }
+      })
+        .then((response) => response.json())
+        .then((text) => {
+          setDet(text)
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
+    }
 
-  details();
+    details()
 
-  return function cleanup(){
-    abortController.abort()
-  }
-},[loadingT]);
-  
+    return function cleanup () {
+      abortController.abort()
+    }
+  }, [loadingT])
+
   useEffect(() => {
-    
-    const page = async () => {          
-      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+auth.id+'/post', {
-                    method: 'GET',
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'X-Authorization': auth.token,
-                    }
-                  })
-                  .then((response) => response.json())
-                  .then((text) => {          
-                      setPosts(text);                                        
-                      setLoading(false);
-                  })
-                  .catch(function (res){
-                    console.log(res)
-                  });
-  }
+    const page = async () => {
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id + '/post', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': auth.token
+        }
+      })
+        .then((response) => response.json())
+        .then((text) => {
+          setPosts(text)
+          setLoading(false)
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
+    }
 
-  page();
+    page()
 
-  return function cleanup(){
-    abortController.abort()
-  }
-}, [det, ref]);
-  
-  if(loading){
+    return function cleanup () {
+      abortController.abort()
+    }
+  }, [det, ref])
+
+  const fileReaderInstance = new FileReader()
+  const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
+
+  useEffect(() => {
+    const loadImage = async () => {
+      // console.log(auth)
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id + '/photo', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': auth.token
+        }
+      })
+        .then((response) => response.blob())
+        .then((text) => {
+          // console.log(text)
+          fileReaderInstance.readAsDataURL(text)
+          fileReaderInstance.onload = () => {
+            const base64data = fileReaderInstance.result
+            setImg(base64data)
+          }
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
+    }
+
+    loadImage()
+  }, [det, navigation, ref])
+
+  if (loading) {
     return (
       <View>
         <Text>
           Loading..
         </Text>
+        <Pressable
+          style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => {
+            const auth = {
+              id: 0,
+              token: 0
+            }
+
+            const save = async () => {
+              try {
+                await AsyncStorage.setItem('userAuth', JSON.stringify(auth))
+              } catch (err) {
+                console.log(err)
+              }
+            }
+
+            save()
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }]
+            })
+          }}
+        >
+          <Text style={[styles.pressText, { color: '#e86868' }]}>Logout</Text>
+        </Pressable>
       </View>
-    );
+    )
   };
 
-  if (auth.token == 0){
+  if (auth.token === 0) {
     navigation.reset({
       index: 0,
-      routes: [{name: 'Login'}]
+      routes: [{ name: 'Login' }]
     })
   }
 
-  return (    
+  return (
     <View style={styles.center}>
-        <SpHeader
-          first_name={det.first_name}
-          last_name={det.last_name}
-        />
-      
+      <SpHeader
+        first_name={det.first_name}
+        last_name={det.last_name}
+        img={img}
+      />
 
       <View style={styles.top}>
 
-        <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => navigation.navigate('ViewFriends')}>
-              <Text style={[styles.pressText, {color: '#e86868'}]}>View Friends</Text>
+        <Pressable style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => navigation.navigate('ViewFriends')}>
+          <Text style={[styles.pressText, { color: '#e86868' }]}>Friends</Text>
         </Pressable>
 
-        <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => navigation.navigate('Drafts')}>
-              <Text style={[styles.pressText, {color: '#689be8'}]}>Drafts</Text>
+        <Pressable style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => navigation.navigate('Drafts', { img: img })}>
+          <Text style={[styles.pressText, { color: '#689be8' }]}>Drafts</Text>
         </Pressable>
-        
-        <Pressable style={styles.button} onPress={() => navigation.navigate('GetPost', {                            
-                              user: auth.id,
-                              action: "add",
-                              post: 0,
-                              token: auth.token
-                          })}>
-          <Text style={[styles.pressText, {color: '#689be8'}]}>Add Post</Text>
+
+        <Pressable
+          style={styles.button} onPress={() => navigation.navigate('GetPost', {
+            user: auth.id,
+            action: 'add',
+            post: 0,
+            token: auth.token
+          })}
+        >
+          <Text style={[styles.pressText, { color: '#689be8' }]}>Add Post</Text>
         </Pressable>
-    
+
+        <Pressable style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => navigation.navigate('CameraPage')}>
+          <Text style={[styles.pressText, { color: '#e86868' }]}>Profile</Text>
+        </Pressable>
+
       </View>
-
-      
 
       <View style={styles.posts}>
 
         <View style={styles.top2}>
 
-          <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() => {
-            if (ref == true){
-              setRef(false)
-            }else{
-              setRef(true)
-            }
-          }}>
-                <Text style={[styles.pressText, {color: '#e86868'}]}>Refresh</Text>
+          <Pressable
+            style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => {
+              if (ref === true) {
+                setRef(false)
+              } else {
+                setRef(true)
+              }
+            }}
+          >
+            <Text style={[styles.pressText, { color: '#e86868' }]}>Refresh</Text>
           </Pressable>
 
-          <Pressable style={[styles.button, {marginLeft: 3, paddingLeft: 3} ]}  onPress={() =>  {
-            const auth = {
-              id: 0,
-              token: 0
-            }
-            
-            const save = async() => {
-              try{
-                await AsyncStorage.setItem("userAuth", JSON.stringify(auth));                     
-              }catch(err){
-                console.log(err)
+          <Pressable
+            style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => {
+              const auth = {
+                id: 0,
+                token: 0
               }
-            }     
-            
-            save();
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'Login'}]
-            })
-            }}>
-                <Text style={[styles.pressText, {color: '#e86868'}]}>Logout</Text>
+
+              const save = async () => {
+                try {
+                  await AsyncStorage.setItem('userAuth', JSON.stringify(auth))
+                } catch (err) {
+                  console.log(err)
+                }
+              }
+
+              save()
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }]
+              })
+            }}
+          >
+            <Text style={[styles.pressText, { color: '#e86868' }]}>Logout</Text>
           </Pressable>
 
         </View>
@@ -300,33 +355,28 @@ function MyPage({route}) {
           <ScrollView contentContainerStyle={styles.scroll}>
 
             {posts.map((post) => (
-            <SpPost
-            key={post.post_id}
-            post={post.post_id}
-            user_id={auth.id}
-            user={true}
-            first_name={post.author.first_name}
-            last_name={post.author.last_name}
-            time={post.timestamp}
-            text={post.text}
-            likes={post.numLikes}
-            author={post.author.user_id}
-            token={auth.token}
-            />
+              <SpPost
+                key={post.post_id}
+                post={post.post_id}
+                user_id={auth.id}
+                user
+                first_name={post.author.first_name}
+                last_name={post.author.last_name}
+                time={post.timestamp}
+                text={post.text}
+                likes={post.numLikes}
+                author={post.author.user_id}
+                token={auth.token}
+              />
             ))}
 
-
-            
-            </ScrollView>
+          </ScrollView>
         </View>
 
       </View>
-        
-      
 
-
-    </View>    
-  );
+    </View>
+  )
 }
 
-export default MyPage;
+export default MyPage

@@ -1,20 +1,11 @@
-import React from 'react';
-import { TextInput, View, Button, StatusBar, StyleSheet } from 'react-native';
+import React from 'react'
 
-import HomeStack from './screens/HomeStack';
+import HomeStack from './screens/HomeStack'
 
-
-const styles = StyleSheet.create({
-  center: {
-    alignItems: 'center'
-  }
-})
-
-
-function App (){
+function App () {
   return (
     <HomeStack />
-  );
+  )
 }
 
-export default App;
+export default App

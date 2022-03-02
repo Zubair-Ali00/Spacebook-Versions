@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import React from 'react'
+import { Text, View, StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
   center: {
@@ -7,46 +7,35 @@ const styles = StyleSheet.create({
   }
 })
 
-
-
 const spPostInput = (props) => {
-    return (
-        //add function to get total posts from props.username
+  return (
+  // add function to get total posts from props.username
+
+    <View>
+      <View>
+
+        <View />
 
         <View>
-            <View>
+          <Text>
+            My Name
+          </Text>
 
-                <View>
+          <Text>
+            date now
+          </Text>
 
-                
-
-                </View>
-
-                <View>
-                    <Text>
-                         My Name
-                    </Text>
-
-                    <Text>
-                        date now
-                    </Text>
-                    
-                </View>
-
-            </View>
-            
-            <View>
-
-            <TextInput
-                //style={styles.input}
-                //onChangeText={onChangeText}
-                //value={text}
-            />
-                
-            </View>
         </View>
-    );
+
+      </View>
+
+      <View>
+
+        <TextInput />
+
+      </View>
+    </View>
+  )
 }
 
-
-export default spPostInput;
+export default spPostInput

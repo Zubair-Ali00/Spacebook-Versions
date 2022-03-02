@@ -1,38 +1,38 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Text, View, StyleSheet, Image } from 'react-native'
 
 const styles = StyleSheet.create({
-  center: { 
-    alignItems: 'center',
+  center: {
+    alignItems: 'center'
 
-  }, 
-  image:{
+  },
+  image: {
+    resizeMode: 'cover',
+    alignItems: 'center',
     top: '20%',
     width: 80,
     height: 80,
     backgroundColor: 'white',
-    borderRadius: 40,
+    borderRadius: 40
   },
-  text:{
+  text: {
     marginTop: '30%',
     fontWeight: 'bold',
-    botton: '20%'
+    bottom: '20%'
   }
 })
 
-function SpHeader(props) {
+function SpHeader (props) {
   return (
-     <View style={styles.center}>
-         <View style={styles.image}>            
-         </View>
+    <View style={styles.center}>
+      <Image source={props.img} style={styles.image} />
 
-         <Text style={styles.text}>
-             {props.first_name} {props.last_name}
-         </Text>
+      <Text style={styles.text}>
+        {props.first_name} {props.last_name}
+      </Text>
 
-     </View>
-  );
+    </View>
+  )
 }
 
-
-export default SpHeader;
+export default SpHeader

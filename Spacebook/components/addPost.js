@@ -1,264 +1,284 @@
-import React, { useEffect, useState } from 'react';
-import { Text, TextInput, View,Button, StyleSheet,Alert, Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react'
+import { Text, TextInput, View, Button, StyleSheet, Alert, Pressable, Image } from 'react-native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
-import {useRoute} from '@react-navigation/native'
+import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger'
 
-import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
-  post:{
-      width: '100%',
-      backgroundColor: '#C0E2FB',
-      alignItems: 'center',
-      padding: 5,
-      borderRadius: 20,
-      top: 20,
-      marginBottom: 20,
-      elevation: 20,
-      shadowColor: '#52006A',
+  post: {
+    width: '100%',
+    backgroundColor: '#C0E2FB',
+    alignItems: 'center',
+    padding: 5,
+    borderRadius: 20,
+    top: 20,
+    marginBottom: 20,
+    elevation: 20,
+    shadowColor: '#52006A'
   },
-  post1:{
-      flexDirection: 'row',
-      alignSelf: "baseline", 
-      marginLeft: 10, 
+  post1: {
+    flexDirection: 'row',
+    alignSelf: 'baseline',
+    marginLeft: 10
   },
-  image:{
-      width: 40,
-      height: 40,
-      backgroundColor: 'white',
-      borderRadius: 40,
-      alignSelf: 'flex-start'
+  image: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 40,
+    alignSelf: 'flex-start'
   },
-  info:{
-      marginLeft: 10,    
+  info: {
+    marginLeft: 10
   },
   text: {
-      fontWeight: 'bold',
+    fontWeight: 'bold'
   },
-  post2:{
-      alignSelf: 'baseline',
-      marginLeft: 20,
-      flexDirection: 'column',
-      marginBottom: 15,
-      marginTop: 15,
+  post2: {
+    alignSelf: 'baseline',
+    marginLeft: 20,
+    flexDirection: 'column',
+    marginBottom: 15,
+    marginTop: 15
   },
-  post3:{
-      flexDirection: 'row',        
+  post3: {
+    flexDirection: 'row'
   },
-  button:{
+  button: {
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#8DCACE',
-    //boxSizing: 'border-box',
+    // boxSizing: 'border-box',
     borderRadius: 10,
     marginTop: 20,
     paddingHorizontal: '10%',
-    paddingHorizontal: '10%', 
+    paddingHorizontal: '10%',
     alignSelf: 'center'
   },
-  input:{
-    shadowOffset: {width: -2, height: 4},
+  input: {
+    shadowOffset: { width: -2, height: 4 },
     shadowColor: 'rgba(0, 0, 0, 0.25)',
     shadowOpacity: 0.2,
     shadowRadius: 3,
     borderRadius: 10,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     width: '100%',
-    height: '100%', 
+    height: '100%',
     alignItems: 'center',
     marginBottom: '10%',
     paddingLeft: 30
-  },
+  }
 })
 
-function add_post(id, token, textt){
-  const xhttp = fetch('http://localhost:3333/api/1.0.0/user/'+id+'/post', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'X-Authorization': token,
-      },
-      body: JSON.stringify({
-          text: textt
-        })
+function add_post (id, token, textt) {
+  const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Authorization': token
+    },
+    body: JSON.stringify({
+      text: textt
     })
+  })
     .then((response) => response.text())
-    .then((text) => {          
-      //console.log(text)                
+    .then((text) => {
+      // console.log(text)
     })
-    .catch(function (res){
+    .catch(function (res) {
       console.log(res)
-    });
+    })
 }
 
+function AddPost (props) {
+  // const [info, setInfo] = useState({});
 
-    
+  const navigation = useNavigation()
+  const abortController = new AbortController()
 
-
-function AddPost(props) {
-  //const [info, setInfo] = useState({});
-
-  const navigation = useNavigation();
-
-  const [post,setPost] = useState({
-    post_id: "",
-    text: "",
+  const [post, setPost] = useState({
+    post_id: '',
+    text: '',
     timestamp: getCurrentTimestamp(),
     author: {
-        user_id: "",
-        first_name: "",
-        last_name: "",
-        email: ""
+      user_id: '',
+      first_name: '',
+      last_name: '',
+      email: ''
     },
     numLikes: 0
-  });
-  const [text, setText] = useState("");
+  })
+  const [text, setText] = useState('')
 
+  const route = useRoute()
 
-  const route = useRoute();
-
-  //console.log("Params are" + route.params)
-  var id = route.params.user;
-  var postt = route.params.post;
-  //console.log(post)
-  //token = route.params.token;
+  // console.log("Params are" + route.params)
+  const id = route.params.user
+  const postt = route.params.post
+  // console.log(post)
+  // token = route.params.token;
   useEffect(() => {
-    const abortController = new AbortController();
-
-    
     const page = async () => {
-      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/'+id+'/post/'+postt, {
-                    method: 'GET',
-                    headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                      'X-Authorization': props.token,
-                    }
-                  })
-                  .then((response) => response.json())
-                  .then((text) => {                    
-                      setPost(text);                
-                      //console.log(post)
-                  })
-                  .catch(function (res){
-                    console.log(res)
-                  });
-      
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post/' + postt, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': props.token
+        }
+      })
+        .then((response) => response.json())
+        .then((text) => {
+          setPost(text)
+          // console.log(post)
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
     }
 
-    page();
+    page()
 
-    
-
-    return function cleanup(){
+    return function cleanup () {
       abortController.abort()
     }
-  }, []);
+  }, [])
 
- 
-  const add_draft = async(id,textt) => {
+  const add_draft = async (id, textt) => {
     const new_draft = {
       user_id: id,
       text: textt
     }
 
-    try{    
-      let data = await AsyncStorage.getItem("drafts");
+    try {
+      const data = await AsyncStorage.getItem('drafts')
 
-      if (data!=null)
-      {
+      if (data != null) {
         const arr = JSON.parse(data)
         arr.push(new_draft)
-        await AsyncStorage.setItem("drafts", JSON.stringify(arr)); 
-        
-      }else{
+        await AsyncStorage.setItem('drafts', JSON.stringify(arr))
+      } else {
         const arr = [new_draft]
-        await AsyncStorage.setItem("drafts", JSON.stringify(arr)); 
+        await AsyncStorage.setItem('drafts', JSON.stringify(arr))
       }
 
-      //var auth = JSON.parse(data)
-                          
-    }catch(err){
+      // var auth = JSON.parse(data)
+    } catch (err) {
       console.log(err)
     }
-  }     
-  
+  }
 
-    return (
-      <View>
+  const fileReaderInstance = new FileReader()
+  const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
 
-          <View style={styles.post}>
-                <View style={styles.post1}>
+  useEffect(() => {
+    const loadImage = async () => {
+      // console.log(auth)
+      const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': props.token
+        }
+      })
+        .then((response) => response.blob())
+        .then((text) => {
+          // console.log(text)
+          fileReaderInstance.readAsDataURL(text)
+          fileReaderInstance.onload = () => {
+            const base64data = fileReaderInstance.result
+            setImg(base64data)
+          }
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
+    }
 
-                    <View style={styles.image}>            
-                    </View>
+    loadImage()
 
-                    <View style={styles.info}>
-                        <Text style={styles.text}>
-                          {props.first_name} {props.last_name}
-                        </Text>
-                                                
-                    </View>
+    return function cleanup () {
+      abortController.abort()
+    }
+  }, [])
 
-                </View>
-                
-                <View style={{
-                    borderBottomColor: 'black',
-                    borderBottomWidth: 1,
-                    width: '100%',
-                    paddingTop: 10,
-                }}/>
-                
-                <View style={styles.post2}>
-                
-                    <Text style={styles.text}>
-                        Add New Post 
-                    </Text>                                    
-                
-                
-                </View>                    
+  return (
+    <View>
 
-                <View style={styles.post3}>
+      <View style={styles.post}>
+        <View style={styles.post1}>
 
-                <TextInput
-                        style={styles.input}
-                        onChangeText={(text) => setText(text)}
-                        //value={text}
-                        placeholder="Enter New Text"
-                        keyboardType='default'
-                    />
-    
-                    </View>
-                </View>
-         
-          
-          <View>
+          <Image source={img} style={styles.image} />
 
-          <Pressable style={styles.button}  onPress={() => {
-            add_post(props.user, props.token, text)
-            navigation.goBack() 
-            }}>
-            <Text style={styles.pressText}>Add</Text>
-          </Pressable>
-
-          <Pressable style={styles.button}  onPress={() => {
-            add_draft(props.user, text)
-            navigation.goBack()
-            }}>
-            <Text style={styles.pressText}>Save</Text>
-          </Pressable>
-
-          <Pressable style={styles.button}  onPress={() => navigation.goBack()}>
-            <Text style={styles.pressText}>Cancel</Text>
-          </Pressable>
+          <View style={styles.info}>
+            <Text style={styles.text}>
+              {props.first_name} {props.last_name}
+            </Text>
 
           </View>
-      </View> 
-    )};
 
-export default AddPost;
+        </View>
+
+        <View style={{
+          borderBottomColor: 'black',
+          borderBottomWidth: 1,
+          width: '100%',
+          paddingTop: 10
+        }}
+        />
+
+        <View style={styles.post2}>
+
+          <Text style={styles.text}>
+            Add New Post
+          </Text>
+
+        </View>
+
+        <View style={styles.post3}>
+
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setText(text)}
+                        // value={text}
+            placeholder='Enter New Text'
+            keyboardType='default'
+          />
+
+        </View>
+      </View>
+
+      <View>
+
+        <Pressable
+          style={styles.button} onPress={() => {
+            add_post(props.user, props.token, text)
+            navigation.goBack()
+          }}
+        >
+          <Text style={styles.pressText}>Add</Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.button} onPress={() => {
+            add_draft(props.user, text)
+            navigation.goBack()
+          }}
+        >
+          <Text style={styles.pressText}>Save</Text>
+        </Pressable>
+
+        <Pressable style={styles.button} onPress={() => navigation.goBack()}>
+          <Text style={styles.pressText}>Cancel</Text>
+        </Pressable>
+
+      </View>
+    </View>
+  )
+};
+
+export default AddPost
