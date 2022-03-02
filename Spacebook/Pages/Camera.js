@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   camera:{
-    borderRadius: 20,
+    height: '70%',
+    width: '100%'
   },
   center: {
     alignItems: 'center',
@@ -111,8 +112,8 @@ function CameraPage({navigation}) {
   },[]);
 
   const [hasPermission, setHasPermission] = useState(false);
-  const [type, setType] = useState(Camera.Constants.Type.back);
-  const [camera, setCamera] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.front);
+  const [camera, setCamera] = useState();
 
   const [photo, setPhoto] = useState({
     height: 4224,
@@ -124,8 +125,8 @@ function CameraPage({navigation}) {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      const status = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status);
     })();
   }, []);
 
@@ -199,10 +200,11 @@ function CameraPage({navigation}) {
     loadImage();
   },[authed]);
 
+  if (hasPermission == false) {
+    return <Text>No access to camera</Text>;
+  }
   
-
-
-  if (hasPermission == true) {
+  if (hasPermission) {
     return (
       <View style={styles.center}>
 
@@ -246,9 +248,7 @@ function CameraPage({navigation}) {
     </View>
     );
   }
-  if (hasPermission == false) {
-    return <Text>No access to camera</Text>;
-  }
+
   
 }
 
