@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Text, TextInput, View, StyleSheet, Pressable, ScrollView } from 'react-native'
 
+// this is the component to display a users friends, and send friend requets
 import SpFriend from '../components/Friends'
 
+// import route to use params when the user navigates to this page
 import { useRoute } from '@react-navigation/native'
 
+// import async storage to get user auth
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
@@ -62,24 +65,31 @@ const styles = StyleSheet.create({
 })
 
 function ViewFriends ({ navigation }) {
+  // search and term change the results of the page
   const [search, setSearch] = useState([])
   const [term, setTerm] = useState('')
 
+  // search text is the text input from the searchbar
   const [st, setSt] = useState('')
 
+  // used to refresh the page when it is reloaded
   const route = useRoute()
 
+  // cancels subscriptions to use Effect
   const abortController = new AbortController()
 
+  // checks if page is still loading
   const [loadingT, setLoadingT] = useState(true)
+
+  // sets the user auth object
   const [auth, setAuth] = useState([])
+
+  // function to get user credentials
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
         const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth.id)
 
         setAuth(auth)
 
@@ -98,9 +108,10 @@ function ViewFriends ({ navigation }) {
     }
   }, [])
 
+  // ensures that the query term is empty if the serch text is 0
   useEffect(() => {
     if (term.length <= 0) {
-      term === ''
+      setTerm('')
     }
 
     const page = async () => {
@@ -114,10 +125,11 @@ function ViewFriends ({ navigation }) {
       })
         .then((response) => response.json())
         .then((text) => {
+          // set Search object to reponse.json
           setSearch(text)
         })
         .catch(function (res) {
-          // console.log(res)
+          console.log(res)
         })
     }
 
@@ -126,6 +138,7 @@ function ViewFriends ({ navigation }) {
     return function cleanup () {
       abortController.abort()
     }
+    // research friends if term changes, if loading is not finished and if the page refreshes
   }, [term, loadingT, route])
 
   return (
@@ -144,7 +157,6 @@ function ViewFriends ({ navigation }) {
         <TextInput
           style={styles.input}
           onChangeText={(text) => setSt(text)}
-              // value={number}
           placeholder='name..'
           keyboardType='default'
         />

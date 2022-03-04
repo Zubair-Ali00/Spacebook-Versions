@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Button, StyleSheet, Pressable } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
 import { useRoute } from '@react-navigation/native'
 
@@ -7,8 +7,6 @@ import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerf
 import EditPost from '../components/editPost'
 import AddPost from '../components/addPost'
 import EditDraft from '../components/editDraft'
-
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
   post: {
@@ -54,8 +52,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#8DCACE',
-    // boxSizing: 'border-box',
-    paddingHorizontal: '10%',
     paddingHorizontal: '10%',
     alignSelf: 'center'
   },
@@ -65,8 +61,7 @@ const styles = StyleSheet.create({
 })
 
 function GetPost ({ navigation }) {
-  // const [info, setInfo] = useState({});
-
+  // default post info
   const [post, setPost] = useState({
     post_id: '',
     text: '',
@@ -79,17 +74,16 @@ function GetPost ({ navigation }) {
     },
     numLikes: 0
   })
-  const [text, setText] = useState('')
 
+  // get params values
   const route = useRoute()
 
-  // console.log("Params are" + route.params)
+  // get post properties
   const id = route.params.user
-
   const postt = route.params.post
-
   const token = route.params.token
 
+  // unsubscribes from useEffect
   const abortController = new AbortController()
 
   useEffect(() => {
@@ -119,6 +113,7 @@ function GetPost ({ navigation }) {
     }
   }, [])
 
+  // if the navigation comes from the draft button
   if (route.params.action === 'draft') {
     return (
       <View style={styles.postUpdate}>
@@ -132,6 +127,8 @@ function GetPost ({ navigation }) {
       </View>
     )
   }
+
+  // if the navigation comes from the edit post button
   if (route.params.action !== 'add') {
     return (
       <View style={styles.postUpdate}>
@@ -143,6 +140,7 @@ function GetPost ({ navigation }) {
         />
       </View>
     )
+  //  if the navigation comes from the add post button
   } else {
     return (
       <View style={styles.postUpdate}>

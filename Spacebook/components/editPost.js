@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TextInput, View, Button, StyleSheet, Pressable } from 'react-native'
+import { Text, TextInput, View, StyleSheet, Pressable } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger'
-
-import SpHeader from '../components/header'
 
 const styles = StyleSheet.create({
   post: {
@@ -54,7 +52,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     paddingHorizontal: '10%',
-    paddingHorizontal: '10%',
     alignSelf: 'center'
   },
   input: {
@@ -73,7 +70,6 @@ const styles = StyleSheet.create({
 })
 
 function EditPost (props) {
-  // const [info, setInfo] = useState({});
 
   const navigation = useNavigation()
 
@@ -91,15 +87,10 @@ function EditPost (props) {
   })
   const [text, setText] = useState('')
 
-  const fetched = false
-
   const route = useRoute()
 
-  // console.log("Params are" + route.params)
   const id = route.params.user
   const postt = route.params.post
-  // console.log(post)
-  // token = route.params.token;
   useEffect(() => {
     const abortController = new AbortController()
 
@@ -115,7 +106,6 @@ function EditPost (props) {
         .then((response) => response.json())
         .then((text) => {
           setPost(text)
-          // console.log(post)
         })
         .catch(function (res) {
           console.log(res)
@@ -129,7 +119,7 @@ function EditPost (props) {
     }
   }, [])
 
-  const update_post = () => {
+  const UpdatePost = () => {
     const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post/' + postt, {
       method: 'PATCH',
       headers: {
@@ -211,7 +201,7 @@ function EditPost (props) {
 
       <View>
 
-        <Pressable style={styles.button} onPress={() => update_post()}>
+        <Pressable style={styles.button} onPress={() => UpdatePost()}>
           <Text style={styles.pressText}>Update</Text>
         </Pressable>
 

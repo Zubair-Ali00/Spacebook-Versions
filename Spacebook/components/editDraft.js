@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Text, TextInput, View, Button, StyleSheet, Pressable } from 'react-native'
+import React, { useState } from 'react'
+import { Text, TextInput, View, StyleSheet, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     paddingHorizontal: '10%',
-    paddingHorizontal: '10%',
     alignSelf: 'center'
   },
   input: {
@@ -76,10 +75,10 @@ function EditDraft (props) {
 
   const text = props.text
 
-  const first_name = props.first_name
-  const last_name = props.last_name
+  const FirstName = props.first_name
+  const LastName = props.last_name
 
-  const update_draft = async () => {
+  const UpdateDraft = async () => {
     try {
       const data = await AsyncStorage.getItem('drafts')
       const arr = JSON.parse(data)
@@ -107,7 +106,7 @@ function EditDraft (props) {
 
           <View style={styles.info}>
             <Text style={styles.text}>
-              {first_name} {last_name}
+              {FirstName} {LastName}
             </Text>
 
           </View>
@@ -148,7 +147,7 @@ function EditDraft (props) {
 
       <View>
 
-        <Pressable style={styles.button} onPress={() => update_draft()}>
+        <Pressable style={styles.button} onPress={() => UpdateDraft()}>
           <Text style={styles.pressText}>Update</Text>
         </Pressable>
 

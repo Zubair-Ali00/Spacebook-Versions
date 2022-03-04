@@ -3,10 +3,11 @@ import { Text, View, ScrollView, Pressable, StyleSheet } from 'react-native'
 
 import { useNavigation } from '@react-navigation/native'
 
+// get Header and Draft components
 import SpHeader from '../components/header'
-import SpPost from '../components/post'
 import SpDraft from '../components/draft'
 
+// import local storage module
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
@@ -14,7 +15,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(39, 154, 241, 0.98)',
     flexDirection: 'column',
     alignItems: 'center'
-    // justifyContent: 'space-between'
   },
   scroll: {
     paddingBottom: '2%',
@@ -71,37 +71,38 @@ const styles = StyleSheet.create({
 })
 
 function Drafts ({ route }) {
+  // default values for the auth object, the drafts and the user details
   const [auth, setAuth] = useState([])
   const [drafts, setDrafts] = useState([])
   const [det, setDet] = useState([])
+
+  // used to refresh the page
   const [ref, setRef] = useState(true)
 
   const navigation = useNavigation()
 
+  // used to unsubscribe from useEffect
   const abortController = new AbortController()
 
+  // get image uri from MainPage instead of refetching
   const img = route.params.img
 
+  // get auth object from local storage
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
         const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth.id)
         setAuth(auth)
 
         const data2 = await AsyncStorage.getItem('drafts')
         const draftss = JSON.parse(data2)
 
+        // if there are no drafts, set the object to empty
         if (data2 != null) {
           setDrafts(draftss)
         } else {
           setDrafts([])
-        }
-
-        if (Number.isInteger(auth.id)) {
-          setLoadingT(false)
         }
       } catch (err) {
         console.log(err)
@@ -115,6 +116,7 @@ function Drafts ({ route }) {
     }
   }, [ref])
 
+  // fetch user details
   useEffect(() => {
     const details = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id, {
@@ -141,11 +143,13 @@ function Drafts ({ route }) {
     }
   }, [auth])
 
+  // get drafts from local storage each time the page reloads
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const data2 = await AsyncStorage.getItem('drafts')
       const draftss = JSON.parse(data2)
 
+      // if there are no drafts, set the object to empty
       if (data2 != null) {
         setDrafts(draftss)
       } else {
@@ -154,11 +158,12 @@ function Drafts ({ route }) {
     })
 
     return () => {
-      unsubscribe
+      unsubscribe()
       abortController.abort()
     }
   }, [navigation, det, ref])
 
+  // show the no drafts screen if there are no drafts
   if (drafts.length <= 0) {
     return (
 
@@ -232,6 +237,7 @@ function Drafts ({ route }) {
         <ScrollView contentContainerStyle={styles.scroll}>
           {drafts.map((draft) => (
             <SpDraft
+            // iterate through drafts object and display the details of each
               key={draft.user_id}
               id={draft.user_id}
               token={auth.token}

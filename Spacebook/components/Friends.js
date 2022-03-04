@@ -55,7 +55,6 @@ const SpFriend = (props) => {
         .then((response) => response.json())
         .then((text) => {
           SetPosts(text)
-          setAuthed = true
         })
         .catch(function (res) {
           console.log(res)
@@ -69,17 +68,19 @@ const SpFriend = (props) => {
     }
   }, [])
 
+  // get total posts from user
   posts.map(() => {
     total = total + 1
+    return 0
   })
 
   const fileReaderInstance = new FileReader()
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
   const [authed, setAuthed] = useState(false)
+  setAuthed(false)
 
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + props.user + '/photo', {
         method: 'GET',
         headers: {
@@ -90,7 +91,6 @@ const SpFriend = (props) => {
       })
         .then((response) => response.blob())
         .then((text) => {
-          // console.log(text)
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result
@@ -106,7 +106,6 @@ const SpFriend = (props) => {
   }, [authed])
 
   return (
-  // add function to get total posts from props.username
     <Pressable style={[styles.button, { borderBottomStartRadius: 20 }]} onPress={() => navigation.navigate('FriendPage', { id: props.user, token: props.token })}>
       <View style={styles.post1}>
 

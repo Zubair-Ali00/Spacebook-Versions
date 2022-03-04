@@ -60,7 +60,7 @@ function SpDraft (props) {
 
   const abortController = new AbortController()
 
-  const delete_draft = async () => {
+  const DeleteDraft = async () => {
     try {
       const data = await AsyncStorage.getItem('drafts')
       let arr = JSON.parse(data)
@@ -71,7 +71,7 @@ function SpDraft (props) {
     }
   }
 
-  const add_post = () => {
+  const AddNewPost = () => {
     const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/post', {
       method: 'POST',
       headers: {
@@ -85,7 +85,7 @@ function SpDraft (props) {
     })
       .then((response) => response.text())
       .then((text) => {
-        delete_draft()
+        DeleteDraft()
       })
       .catch(function (res) {
         console.log(res)
@@ -181,11 +181,11 @@ function SpDraft (props) {
         >
           <Text>Edit</Text>
         </Pressable>
-        <Pressable style={[styles.button, { borderBottomEndRadius: 0, borderBottomStartRadius: 0 }]} onPress={() => add_post()}>
+        <Pressable style={[styles.button, { borderBottomEndRadius: 0, borderBottomStartRadius: 0 }]} onPress={() => AddNewPost()}>
           <Text>Post</Text>
         </Pressable>
 
-        <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_draft()}>
+        <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeleteDraft()}>
           <Text>Delete</Text>
         </Pressable>
 

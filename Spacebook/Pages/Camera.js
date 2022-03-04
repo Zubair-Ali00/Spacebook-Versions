@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TextInput, View, StyleSheet, Pressable, ScrollView, Image } from 'react-native'
-import { useRoute } from '@react-navigation/native'
+import { Text, View, StyleSheet, Pressable, Image } from 'react-native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera } from 'expo-camera'
@@ -62,6 +61,7 @@ const styles = StyleSheet.create({
   }
 })
 
+// change image if the user presses confirm
 function changeImage (id, token, image) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
     method: 'POST',
@@ -80,19 +80,22 @@ function changeImage (id, token, image) {
 }
 
 function CameraPage ({ navigation }) {
-  // route.params user id
-
+  // used to unsubscribe form useEffect
   const abortController = new AbortController()
+
+  // used to convert raw image received from server to base64
   const fileReaderInstance = new FileReader()
+
+  // set auth details
   const [auth, setAuth] = useState([])
   const [authed, setAuthed] = useState(false)
+
+  // get auth info from local storage
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
         const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth)
         setAuth(auth)
         setAuthed(true)
       } catch (err) {
@@ -107,18 +110,23 @@ function CameraPage ({ navigation }) {
     }
   }, [])
 
+  // set camera properties
   const [hasPermission, setHasPermission] = useState(false)
   const [type, setType] = useState(Camera.Constants.Type.front)
+  setType(Camera.Constants.Type.front)
   const [camera, setCamera] = useState()
 
+  // set the default camera image if there is none
   const [photo, setPhoto] = useState({
     height: 4224,
     uri: 'https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg',
     width: 192
   })
 
+  // set the default image property
   const [img, setImg] = useState(photo.uri)
 
+  // request camera access
   useEffect(() => {
     (async () => {
       const status = await Camera.requestCameraPermissionsAsync()
@@ -126,6 +134,7 @@ function CameraPage ({ navigation }) {
     })()
   }, [])
 
+  // converrt base64 to blob for uploading to server
   const b64toBlob = (b64Data, contentType, sliceSize) => {
     contentType = contentType || ''
     sliceSize = sliceSize || 512
@@ -150,11 +159,9 @@ function CameraPage ({ navigation }) {
     return blob
   }
 
+  // takes a picture and updated the camera image
   const snapp = async () => {
     const photoo = await camera.takePictureAsync()
-    // console.log(photoo)
-    // console.log(photoo);
-    // setPhoto(photoo);
     setImg(photoo.uri)
 
     const block = photoo.uri.split(';')
@@ -164,9 +171,9 @@ function CameraPage ({ navigation }) {
     setPhoto(blo)
   }
 
+  // fetch the previous user's photo
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id + '/photo', {
         method: 'GET',
         headers: {
@@ -192,6 +199,7 @@ function CameraPage ({ navigation }) {
     loadImage()
   }, [authed])
 
+  // show no access text if the user has not granted access
   if (hasPermission === false) {
     return <Text>No access to camera</Text>
   }

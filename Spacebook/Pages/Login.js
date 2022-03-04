@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TextInput, Text, View, Button, StatusBar, StyleSheet, Pressable } from 'react-native'
+import { TextInput, Text, View, StatusBar, StyleSheet, Pressable } from 'react-native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center'
-    // justifyContent: 'space-between'
   },
   text: {
     position: 'relative',
@@ -25,10 +24,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#8DCACE',
-    // boxSizing: 'border-box',
     borderRadius: 10,
     marginTop: 20,
-    paddingHorizontal: '10%',
     paddingHorizontal: '10%',
     alignSelf: 'center'
   },
@@ -57,26 +54,21 @@ const styles = StyleSheet.create({
 })
 
 export default function Login ({ navigation }) {
-  const [name, setName] = useState('')
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  // error text at bottom of the page
   const [text, setText] = useState('')
 
   const [auth, setAuth] = useState([])
 
+  // redirects to main page is the user is already logged in
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
-        const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth.id)
-
-        setAuth(auth)
-
-        // console.log(auth.id)
+        const CheckAuth = JSON.parse(data)
+        setAuth(CheckAuth)
 
         if (auth.id > 1) {
           navigation.reset({
@@ -92,9 +84,8 @@ export default function Login ({ navigation }) {
     getAuth()
   }, [])
 
+  // posts request to login, if there is an error , the error text displayed is changed
   const go = async () => {
-    const data = {}
-
     const xhttp = await fetch('http://localhost:3333/api/1.0.0/login', {
       method: 'POST',
       headers: {
@@ -108,6 +99,7 @@ export default function Login ({ navigation }) {
     })
       .then((response) => response.json())
       .then((text) => {
+        // after successful login, the authentication object is created in local storage and the app navigates to Mainpage
         const auth = {
           id: text.id,
           token: text.token
@@ -129,7 +121,7 @@ export default function Login ({ navigation }) {
         })
       })
       .catch(function (res) {
-        setText('TRY AGAIN')
+        setText(res)
       })
   }
 
@@ -144,16 +136,13 @@ export default function Login ({ navigation }) {
 
         <TextInput
           style={styles.input}
-              // style={styles.input}
           onChangeText={(text) => setEmail(text)}
-              // value={number}
           placeholder='   email'
           keyboardType='email-address'
         />
 
         <TextInput
           style={styles.input}
-              // style={styles.input}
           onChangeText={(text) => setPassword(text)}
           secureTextEntry
           placeholder='   password'

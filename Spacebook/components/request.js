@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   }
 })
 
-function request_user (id, token) {
+function RequestUser (id, token) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + id + '/friends', {
     method: 'POST',
     headers: {
@@ -69,7 +69,6 @@ const SpRequest = (props) => {
 
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + props.user_id + '/photo', {
         method: 'GET',
         headers: {
@@ -96,14 +95,13 @@ const SpRequest = (props) => {
   }, [])
 
   return (
-  // add function to get total posts from props.username
     <View style={[styles.post]} key={props.user_id}>
       <Image source={img} style={styles.image} />
       <View style={styles.text}>
         <Text style={styles.text2}>{props.user_givenname} {props.user_familyname}</Text>
       </View>
 
-      <Pressable style={styles.button} onPress={() => request_user(props.user_id, props.token)}>
+      <Pressable style={styles.button} onPress={() => RequestUser(props.user_id, props.token)}>
         <Text style={[styles.pressText, { color: '#e86868' }]}>Request</Text>
       </Pressable>
 

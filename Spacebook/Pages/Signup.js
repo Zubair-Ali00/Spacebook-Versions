@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { TextInput, Text, View, Button, StatusBar, Alert, StyleSheet, Pressable } from 'react-native'
+import React, { useState } from 'react'
+import { TextInput, Text, View, StatusBar, Alert, StyleSheet, Pressable } from 'react-native'
 
 const styles = StyleSheet.create({
   center: {
@@ -23,14 +23,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#8DCACE',
-    // boxSizing: 'border-box',
     shadowOffset: { width: -50, height: 40 },
     shadowColor: 'rgba(0, 0, 0, 0.25)',
     shadowOpacity: 0.2,
     shadowRadius: 3,
     borderRadius: 10,
     marginTop: 20,
-    paddingHorizontal: '10%',
     paddingHorizontal: '10%',
     alignSelf: 'center'
   },
@@ -59,15 +57,18 @@ const styles = StyleSheet.create({
 })
 
 function Signup ({ navigation }) {
+  // user input form values
   const [fname, setFname] = useState('')
   const [lname, setLname] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [cpassword, setCpassword] = useState('')
 
+  // text to display when error occurs
   const [text, setText] = useState('')
 
   const check = () => {
+    // check if both password and confirm password are the same
     if (password !== cpassword) {
       setText('PASSWORDS DO NOT MATCH')
     } else if (password.length < 8) {
@@ -78,8 +79,6 @@ function Signup ({ navigation }) {
   }
 
   const go = async () => {
-    const data = {}
-
     const xhttp = await fetch('http://localhost:3333/api/1.0.0/user', {
       method: 'POST',
       headers: {
@@ -95,11 +94,15 @@ function Signup ({ navigation }) {
     })
       .then((response) => response.text())
       .then((text) => {
-        Alert.alert(
-          'Signup',
-          'User created successfully!', [{ text: 'OK' }]
-        )
-        navigation.push('Login')
+        if (text === 'Bad Request - database error. Check the log. Possibly duplicate entry?') {
+          setText('User Already exists')
+        } else {
+          Alert.alert(
+            'Signup',
+            'User created successfully!', [{ text: 'OK' }]
+          )
+          navigation.push('Login')
+        }
       })
       .catch(function (res) {
         console.log(res)
@@ -158,7 +161,7 @@ function Signup ({ navigation }) {
           keyboardType='default'
         />
 
-        <Pressable style={styles.button} onPress={go}>
+        <Pressable style={styles.button} onPress={check}>
           <Text style={styles.pressText}>Signup</Text>
         </Pressable>
 

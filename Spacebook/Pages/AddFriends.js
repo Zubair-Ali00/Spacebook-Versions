@@ -64,8 +64,10 @@ const styles = StyleSheet.create({
 })
 
 const AddFriends = ({ navigation }) => {
+  // used to enable route.params
   const route = useRoute()
 
+  // set search term, serch text and search button default values
   const [search, setSearch] = useState([])
   const [term, setTerm] = useState('')
   const [st, setSt] = useState('')
@@ -73,14 +75,14 @@ const AddFriends = ({ navigation }) => {
   const abortController = new AbortController()
 
   const [loadingT, setLoadingT] = useState(true)
+
+  // get auth info from local storage
   const [auth, setAuth] = useState([])
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
         const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth.id)
 
         setAuth(auth)
 
@@ -99,6 +101,7 @@ const AddFriends = ({ navigation }) => {
     }
   }, [])
 
+  // search friends according to term in search bar
   useEffect(() => {
     const page = async () => {
       if (term.length <= 0) {

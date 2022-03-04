@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Text, View, StyleSheet, Image } from 'react-native'
 
 const styles = StyleSheet.create({

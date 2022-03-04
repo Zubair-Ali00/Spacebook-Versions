@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TextInput, View, StyleSheet, ScrollView, Pressable } from 'react-native'
+import { Text, View, StyleSheet, ScrollView, Pressable } from 'react-native'
 
+// route used to get params and refresh page
 import { useRoute } from '@react-navigation/native'
 
+// get friend request component
 import SpFriendrq from '../components/friendrq'
 
+// used for local storage
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
@@ -67,22 +70,26 @@ const styles = StyleSheet.create({
 })
 
 const ViewFriends = ({ navigation }) => {
+  // an array for all the requests
   const [requests, setRequests] = useState([])
 
+  // cancels subscriptions to useEffect
   const abortController = new AbortController()
 
   const route = useRoute()
 
+  // determine whether all the page content is fully loaded
   const [loadingT, setLoadingT] = useState(true)
+
+  // holds the user credentials
   const [auth, setAuth] = useState([])
+
+  // get user credentials from local storage
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
         const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth.id)
-
         setAuth(auth)
 
         if (Number.isInteger(auth.id)) {
@@ -100,6 +107,7 @@ const ViewFriends = ({ navigation }) => {
     }
   }, [])
 
+  // fetch all the requests for the current user
   useEffect(() => {
     const page = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/friendrequests/', {
@@ -113,10 +121,8 @@ const ViewFriends = ({ navigation }) => {
         .then((response) => response.json())
         .then((text) => {
           setRequests(text)
-          // console.log(requests)
         })
         .catch(function (res) {
-          // console.log(res)
         })
     }
 
@@ -125,6 +131,8 @@ const ViewFriends = ({ navigation }) => {
     return function cleanup () {
       abortController.abort()
     }
+
+    // data is refreshed if requests object changes, if loading isnt done or if the page refreshes
   }, [requests, loadingT, route])
 
   return (

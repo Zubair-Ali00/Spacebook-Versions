@@ -3,9 +3,11 @@ import { Text, View, ScrollView, Pressable, StyleSheet } from 'react-native'
 
 import { useNavigation } from '@react-navigation/native'
 
+// user header and posts component
 import SpHeader from '../components/header'
 import SpPost from '../components/post'
 
+// local storage
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const styles = StyleSheet.create({
@@ -64,35 +66,28 @@ const styles = StyleSheet.create({
   }
 })
 
-const getData = async () => {
-  try {
-    const jsonValue = await AsyncStorage.getItem('@storage_Key')
-    return jsonValue != null ? JSON.parse(jsonValue) : null
-  } catch (e) {
-    // error reading value
-  }
-}
-
 function MyPage ({ route }) {
-  // const [info, setInfo] = useState({});
+  // object to store all the users posts
   const [posts, setPosts] = useState([])
 
+  // determined if the page has fully loaded
   const [loading, setLoading] = useState(true)
   const [loadingT, setLoadingT] = useState(true)
 
+  // used to refresh the page manually
   const r = true
   const [ref, setRef] = useState(r)
 
+  // object to hold authentication details fo the user and their actual user info
   const [auth, setAuth] = useState([])
   const [det, setDet] = useState([])
 
   const navigation = useNavigation()
 
-  // const route = useRoute();
   const abortController = new AbortController()
 
   useEffect(() => {
-    // Subscribe for the focus Listener
+    // Subscribe for the focus Listener, determine if the page is being viewed
     const unsubscribe = navigation.addListener('focus', async () => {
       const xhttp = await fetch('http://192.168.237:3333/api/1.0.0/user/' + auth.id + '/post', {
         method: 'GET',
@@ -112,27 +107,23 @@ function MyPage ({ route }) {
     })
 
     return () => {
-      unsubscribe
+      unsubscribe()
       abortController.abort()
     }
+
+    // if navigation changes, the data is refetched
   }, [navigation, det])
 
-  // var id = route.params.text.id;
-  // var token = route.params.text.token;
-
+  // get user authentication details from local storage
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
         const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth.id)
-
-        const data2 = await AsyncStorage.getItem('drafts')
-        const drafts = JSON.parse(data2)
 
         setAuth(auth)
 
+        // checks if the promise is resolved
         if (Number.isInteger(auth.id)) {
           setLoadingT(false)
         }
@@ -148,6 +139,7 @@ function MyPage ({ route }) {
     }
   }, [])
 
+  // fetches user details form the server, after authentication details have been received
   useEffect(() => {
     const details = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id, {
@@ -174,6 +166,7 @@ function MyPage ({ route }) {
     }
   }, [loadingT])
 
+  // fetch all the users posts after user details have fully loaded
   useEffect(() => {
     const page = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id + '/post', {
@@ -201,12 +194,15 @@ function MyPage ({ route }) {
     }
   }, [det, ref])
 
+  // file reader instance is used to convert image data received into base64
   const fileReaderInstance = new FileReader()
+
+  // default loading image
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
 
+  // get the users Image
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + auth.id + '/photo', {
         method: 'GET',
         headers: {
@@ -217,7 +213,7 @@ function MyPage ({ route }) {
       })
         .then((response) => response.blob())
         .then((text) => {
-          // console.log(text)
+          // this converts the raw data received into base64
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result
@@ -232,6 +228,7 @@ function MyPage ({ route }) {
     loadImage()
   }, [det, navigation, ref])
 
+  // displays the loading screen if all data hasnt loaded yet
   if (loading) {
     return (
       <View>
@@ -266,6 +263,7 @@ function MyPage ({ route }) {
     )
   };
 
+  // returns to Login screen if auth object is lost
   if (auth.token === 0) {
     navigation.reset({
       index: 0,
@@ -314,6 +312,7 @@ function MyPage ({ route }) {
 
           <Pressable
             style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => {
+              // refreshes the page by resetting a value 'ref'
               if (ref === true) {
                 setRef(false)
               } else {
@@ -330,7 +329,7 @@ function MyPage ({ route }) {
                 id: 0,
                 token: 0
               }
-
+              // reset auth object in local storage
               const save = async () => {
                 try {
                   await AsyncStorage.setItem('userAuth', JSON.stringify(auth))
@@ -340,6 +339,8 @@ function MyPage ({ route }) {
               }
 
               save()
+
+              // goes back to Login screen and refreshes the whole Navigation stack
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'Login' }]
@@ -355,6 +356,7 @@ function MyPage ({ route }) {
           <ScrollView contentContainerStyle={styles.scroll}>
 
             {posts.map((post) => (
+              // iterates through the posts object to display all the users posts
               <SpPost
                 key={post.post_id}
                 post={post.post_id}

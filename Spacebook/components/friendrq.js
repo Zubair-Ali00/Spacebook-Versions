@@ -62,11 +62,10 @@ const SpFriendrq = (props) => {
       .then((text) => {
       })
       .catch(function (res) {
-        // console.log(res)
       })
   }
 
-  const delete_rq = (id) => {
+  const DeleteRq = (id) => {
     const xhttp = fetch('http://localhost:3333/api/1.0.0/friendrequests/' + id, {
       method: 'DELETE',
       headers: {
@@ -77,10 +76,8 @@ const SpFriendrq = (props) => {
     })
       .then((response) => response.text())
       .then((text) => {
-        // console.log(text)
       })
       .catch(function (res) {
-        // console.log(res)
       })
   }
 
@@ -91,7 +88,6 @@ const SpFriendrq = (props) => {
 
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/photo', {
         method: 'GET',
         headers: {
@@ -133,7 +129,7 @@ const SpFriendrq = (props) => {
         <Text style={[styles.pressText, { color: 'black' }]}>Accept</Text>
       </Pressable>
 
-      <Pressable style={styles.button2} onPress={() => delete_rq(props.id)}>
+      <Pressable style={styles.button2} onPress={() => DeleteRq(props.id)}>
         <Text style={[styles.pressText, { color: 'black' }]}>Decline</Text>
       </Pressable>
 

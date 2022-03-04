@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TextInput, View, Button, StyleSheet, Alert, Pressable, Image } from 'react-native'
+import { Text, TextInput, View, StyleSheet, Pressable, Image } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger'
@@ -50,10 +50,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#8DCACE',
-    // boxSizing: 'border-box',
     borderRadius: 10,
     marginTop: 20,
-    paddingHorizontal: '10%',
     paddingHorizontal: '10%',
     alignSelf: 'center'
   },
@@ -72,7 +70,7 @@ const styles = StyleSheet.create({
   }
 })
 
-function add_post (id, token, textt) {
+function AddNewPost (id, token, textt) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post', {
     method: 'POST',
     headers: {
@@ -86,7 +84,6 @@ function add_post (id, token, textt) {
   })
     .then((response) => response.text())
     .then((text) => {
-      // console.log(text)
     })
     .catch(function (res) {
       console.log(res)
@@ -94,8 +91,6 @@ function add_post (id, token, textt) {
 }
 
 function AddPost (props) {
-  // const [info, setInfo] = useState({});
-
   const navigation = useNavigation()
   const abortController = new AbortController()
 
@@ -115,11 +110,9 @@ function AddPost (props) {
 
   const route = useRoute()
 
-  // console.log("Params are" + route.params)
   const id = route.params.user
   const postt = route.params.post
-  // console.log(post)
-  // token = route.params.token;
+
   useEffect(() => {
     const page = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post/' + postt, {
@@ -133,7 +126,6 @@ function AddPost (props) {
         .then((response) => response.json())
         .then((text) => {
           setPost(text)
-          // console.log(post)
         })
         .catch(function (res) {
           console.log(res)
@@ -147,8 +139,8 @@ function AddPost (props) {
     }
   }, [])
 
-  const add_draft = async (id, textt) => {
-    const new_draft = {
+  const AddNewDraft = async (id, textt) => {
+    const NewDraft = {
       user_id: id,
       text: textt
     }
@@ -158,14 +150,12 @@ function AddPost (props) {
 
       if (data != null) {
         const arr = JSON.parse(data)
-        arr.push(new_draft)
+        arr.push(NewDraft)
         await AsyncStorage.setItem('drafts', JSON.stringify(arr))
       } else {
-        const arr = [new_draft]
+        const arr = [NewDraft]
         await AsyncStorage.setItem('drafts', JSON.stringify(arr))
       }
-
-      // var auth = JSON.parse(data)
     } catch (err) {
       console.log(err)
     }
@@ -176,7 +166,6 @@ function AddPost (props) {
 
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
         method: 'GET',
         headers: {
@@ -187,7 +176,6 @@ function AddPost (props) {
       })
         .then((response) => response.blob())
         .then((text) => {
-          // console.log(text)
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result
@@ -256,7 +244,7 @@ function AddPost (props) {
 
         <Pressable
           style={styles.button} onPress={() => {
-            add_post(props.user, props.token, text)
+            AddNewPost(props.user, props.token, text)
             navigation.goBack()
           }}
         >
@@ -265,7 +253,7 @@ function AddPost (props) {
 
         <Pressable
           style={styles.button} onPress={() => {
-            add_draft(props.user, text)
+            AddNewDraft(props.user, text)
             navigation.goBack()
           }}
         >

@@ -62,7 +62,6 @@ function like (author, post, token) {
   })
     .then((response) => response.text())
     .then((text) => {
-      // do something if you have already liked
       console.log(text)
     })
     .catch(function (res) {
@@ -81,15 +80,13 @@ function dislike (author, post, token) {
   })
     .then((response) => response.text())
     .then((text) => {
-      // do something if you have already liked
-      // console.log(text)
     })
     .catch(function (res) {
       console.log(res)
     })
 }
 
-function delete_post (user, post, token) {
+function DeletePost (user, post, token) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + user + '/post/' + post, {
     method: 'DELETE',
     headers: {
@@ -100,7 +97,6 @@ function delete_post (user, post, token) {
   })
     .then((response) => response.text())
     .then((text) => {
-      // do some this if you have not liked
     })
     .catch(function (res) {
       console.log(res)
@@ -116,7 +112,6 @@ function spPost (props) {
 
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + props.author + '/photo', {
         method: 'GET',
         headers: {
@@ -146,16 +141,17 @@ function spPost (props) {
     }
   }, [])
 
+  let _like = false
+
   if (props.user === false) {
     if (props.author === props.user_id) {
-      var _like = false
+      _like = false
     } else {
-      var _like = true
+      _like = true
     }
 
     if (_like === true) {
       return (
-      // add function to get total posts from props.username
 
         <View style={styles.post}>
           <View style={styles.post1}>
@@ -214,7 +210,6 @@ function spPost (props) {
       )
     } else {
       return (
-      // add function to get total posts from props.username
 
         <View style={styles.post}>
           <View style={styles.post1}>
@@ -266,7 +261,7 @@ function spPost (props) {
               <Text>Edit</Text>
             </Pressable>
 
-            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_post(props.friend, props.post, props.token)}>
+            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeletePost(props.friend, props.post, props.token)}>
               <Text>Delete</Text>
             </Pressable>
 
@@ -277,7 +272,6 @@ function spPost (props) {
   } else {
     if (props.author === props.user_id) {
       return (
-      // add function to get total posts from props.username
 
         <View style={styles.post}>
           <View style={styles.post1}>
@@ -328,7 +322,7 @@ function spPost (props) {
             >
               <Text>Edit</Text>
             </Pressable>
-            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_post(props.author, props.post, props.token)}>
+            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeletePost(props.author, props.post, props.token)}>
               <Text>Delete</Text>
             </Pressable>
 
@@ -383,7 +377,7 @@ function spPost (props) {
               <Text>Go to Page</Text>
             </Pressable>
 
-            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_post(props.author, props.post, props.token)}>
+            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeletePost(props.author, props.post, props.token)}>
               <Text>Delete</Text>
             </Pressable>
 

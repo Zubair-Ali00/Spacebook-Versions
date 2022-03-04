@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     width: '100%'
-    // justifyContent: 'space-between'
   },
   scroll: {
     paddingBottom: '2%',
@@ -47,33 +46,28 @@ const styles = StyleSheet.create({
 })
 
 function FriendPage ({ navigation }) {
-  // const [info, setInfo] = useState({});
-  const [posts, setPosts] = useState([])
-
+  // user to get param values and unsubscribe from useEffect
   const route = useRoute()
   const abortController = new AbortController()
 
+  // get id of friend
   const id = route.params.id
-  const token = route.params.token
 
+  // values used to refresh the page
   const [loadingT, setLoadingT] = useState(true)
   const [ref, setRef] = useState(true)
-
-  const [auth, setAuth] = useState([])
-
-  const [det, setDet] = useState([])
-
   const [loading, setLoading] = useState(true)
 
-  const [r, setR] = useState(true)
+  const [auth, setAuth] = useState([])
+  const [det, setDet] = useState([])
+  const [posts, setPosts] = useState([])
 
+  // get auth info from local storage
   useEffect(() => {
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
         const auth = JSON.parse(data)
-        // console.log(JSON.parse(auth))
-        // console.log(auth.id)
 
         setAuth(auth)
 
@@ -92,8 +86,7 @@ function FriendPage ({ navigation }) {
     }
   }, [])
 
-  // console.log(id)
-  // token = route.params.token;
+  // get friend's details
   useEffect(() => {
     const details = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id, {
@@ -124,8 +117,8 @@ function FriendPage ({ navigation }) {
     }
   }, [det, loadingT])
 
+  // get all the posts under the friend user profile
   useEffect(() => {
-    const abortController = new AbortController()
     const page = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post', {
         method: 'GET',
@@ -151,7 +144,7 @@ function FriendPage ({ navigation }) {
     return function cleanup () {
       abortController.abort()
     }
-  }, [det, ref, r])
+  }, [det, ref])
 
   useEffect(() => {
     // Subscribe for the focus Listener
@@ -167,7 +160,6 @@ function FriendPage ({ navigation }) {
         .then((response) => response.json())
         .then((text) => {
           setPosts(text)
-          // console.log("fetching")
         })
         .catch(function (res) {
           console.log(res)
@@ -175,20 +167,20 @@ function FriendPage ({ navigation }) {
     })
 
     return () => {
-      // Clear setInterval in case of screen unmount
-      // clearTimeout(interval);
-      // Unsubscribe for the focus Listener
-      unsubscribe
+      // only refetch posts when the page reloads or refreshes
+      unsubscribe()
       abortController.abort()
     }
   }, [navigation, det])
 
+  // used to convers raw image data from server to base64
   const fileReaderInstance = new FileReader()
+  // default loading image
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
 
+  // fetch image from server, convert is to base64 and store the value in img variable
   useEffect(() => {
     const loadImage = async () => {
-      // console.log(auth)
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {
         method: 'GET',
         headers: {
@@ -199,7 +191,6 @@ function FriendPage ({ navigation }) {
       })
         .then((response) => response.blob())
         .then((text) => {
-          // console.log(text)
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result
@@ -214,6 +205,7 @@ function FriendPage ({ navigation }) {
     loadImage()
   }, [det, navigation, ref])
 
+  // if page is still loading, display loading screen
   if (loading) {
     return (
       <View>
@@ -265,6 +257,7 @@ function FriendPage ({ navigation }) {
         <ScrollView contentContainerStyle={styles.scroll}>
           {posts.map((post) => (
             <SpPost
+            // iterate thorugh posts and display each
               key={post.post_id}
               post={post.post_id}
               first_name={post.author.first_name}
