@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
 })
 
 function EditPost (props) {
-
   const navigation = useNavigation()
 
   const [post, setPost] = useState({

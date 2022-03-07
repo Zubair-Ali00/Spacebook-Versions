@@ -1,24 +1,24 @@
 import React from 'react'
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'
 
-import ViewFriends from '../Pages/ViewFriends';
-import AddFriends from '../Pages/AddFriends';
-import Requests from '../Pages/Requests';
+import ViewFriends from '../Pages/ViewFriends'
+import AddFriends from '../Pages/AddFriends'
+import Requests from '../Pages/Requests'
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator()
 
 function MyPageStack () {
   return (
-    //creates tab navigator for the View Friends Screen
+    // creates tab navigator for the View Friends Screen
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
-          
-          //changes the tab icon depending on the route name
+
+          // changes the tab icon depending on the route name
           if (route.name === 'HomeView') {
             iconName = focused
               ? 'compass-sharp'
@@ -28,11 +28,11 @@ function MyPageStack () {
           } else if (route.name == 'Requests') {
             iconName = focused ? 'file-tray' : 'file-tray-outline'
           }
-                    
+
           return <Ionicons name={iconName} size={size} color={color} />
         },
 
-        //change tab colour if active or inactive
+        // change tab colour if active or inactive
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray'
 
