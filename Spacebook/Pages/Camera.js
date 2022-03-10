@@ -159,11 +159,12 @@ function CameraPage ({ navigation }) {
     return blob
   }
 
-  // takes a picture and updated the camera image
+  // function that takes a picture and updated the camera image
   const snapp = async () => {
     const photoo = await camera.takePictureAsync()
     setImg(photoo.uri)
 
+    // convert photo data to blob for upload
     const block = photoo.uri.split(';')
     const contentType = block[0].split(':')[1]
     const data = block[1].split(',')[1]
@@ -184,6 +185,7 @@ function CameraPage ({ navigation }) {
       })
         .then((response) => response.blob())
         .then((text) => {
+          //converts image to base64
           console.log(text)
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {

@@ -74,6 +74,7 @@ const AddFriends = ({ navigation }) => {
 
   const abortController = new AbortController()
 
+  // check if user authentication details are still loading
   const [loadingT, setLoadingT] = useState(true)
 
   // get auth info from local storage
@@ -86,6 +87,7 @@ const AddFriends = ({ navigation }) => {
 
         setAuth(auth)
 
+        // check if user id is valid
         if (Number.isInteger(auth.id)) {
           setLoadingT(false)
         }
@@ -129,6 +131,8 @@ const AddFriends = ({ navigation }) => {
     return function cleanup () {
       abortController.abort()
     }
+
+    //refresh the page is search term changes or if the page refreshes
   }, [term, loadingT, route])
 
   return (

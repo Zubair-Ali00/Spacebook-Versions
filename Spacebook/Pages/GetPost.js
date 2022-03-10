@@ -99,7 +99,6 @@ function GetPost ({ navigation }) {
         .then((response) => response.json())
         .then((text) => {
           setPost(text)
-          // console.log(text)
         })
         .catch(function (res) {
           console.log(res)
