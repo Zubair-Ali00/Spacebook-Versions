@@ -185,7 +185,7 @@ function CameraPage ({ navigation }) {
       })
         .then((response) => response.blob())
         .then((text) => {
-          //converts image to base64
+          // converts image to base64
           console.log(text)
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
