@@ -1,3 +1,4 @@
+// import the classes from the module react
 import React, { useEffect, useState } from 'react'
 import { Text, View, ScrollView, Pressable, StyleSheet } from 'react-native'
 

@@ -1,4 +1,6 @@
+// importing the module React from react
 import React, { useEffect, useState } from 'react'
+// importing the inbuilt classes from ract-native module
 import { Text, TextInput, View, StyleSheet, Pressable, ScrollView } from 'react-native'
 
 // this is the component to display a users friends, and send friend requets
@@ -10,6 +12,8 @@ import { useRoute } from '@react-navigation/native'
 // import async storage to get user auth
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+// creating a stylesheet variable of type CSS to decorate the page
+// each object is preceded by a full colon and curly brace to eclonse the attributes
 const styles = StyleSheet.create({
   center: {
     alignItems: 'center',
@@ -64,6 +68,8 @@ const styles = StyleSheet.create({
   }
 })
 
+// functions are preceded by the keyword function
+// the function viewFriends is used to display a lis of friends
 function ViewFriends ({ navigation }) {
   // search and term change the results of the page
   const [search, setSearch] = useState([])
@@ -87,6 +93,8 @@ function ViewFriends ({ navigation }) {
   // function to get user credentials
 
   useEffect(() => {
+    // check if the user is authenticated first
+    // the var keyword sis used to instrantiate a variable
     const getAuth = async () => {
       try {
         const data = await AsyncStorage.getItem('userAuth')
@@ -105,7 +113,7 @@ function ViewFriends ({ navigation }) {
     }
 
     getAuth()
-
+    // return the output of the function cleanup
     return function cleanup () {
       abortController.abort()
     }

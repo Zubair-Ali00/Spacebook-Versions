@@ -1,13 +1,14 @@
+// import the classes from the module react
 import React, { useEffect, useState } from 'react'
 import { Text, View, Pressable, ScrollView, StyleSheet } from 'react-native'
 
 import { useRoute } from '@react-navigation/native'
-
+// import the classes from the directory
 import SpHeader from '../components/header'
 import SpPost from '../components/post'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
+// instanttiate the CSS object
 const styles = StyleSheet.create({
   center: {
     backgroundColor: 'rgba(39, 154, 241, 0.98)',

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { TextInput, Text, View, StatusBar, StyleSheet, Pressable } from 'react-native'
-
+import { TextInput, Text, View, Button, StatusBar, StyleSheet, Pressable } from 'react-native'
+// access the AsyncStorage class from the directory
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
+// instantiate the CSS object
 const styles = StyleSheet.create({
   center: {
     backgroundColor: 'rgba(39, 154, 241, 0.98)',

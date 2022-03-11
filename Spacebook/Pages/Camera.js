@@ -1,9 +1,12 @@
+// import the classes from the module react
 import React, { useEffect, useState } from 'react'
 import { Text, TextInput, View, StyleSheet, Pressable, ScrollView, Image } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
-
+// initiate the class from the directory
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera } from 'expo-camera'
+
+// initiate the CSS Object
 
 const styles = StyleSheet.create({
   container: {

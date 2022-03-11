@@ -1,3 +1,4 @@
+// importing the necessary modules
 import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, ScrollView, Pressable } from 'react-native'
 
@@ -9,6 +10,7 @@ import SpFriendrq from '../components/friendrq'
 
 // used for local storage
 import AsyncStorage from '@react-native-async-storage/async-storage'
+// b instantiating the CSS object
 
 const styles = StyleSheet.create({
   center: {

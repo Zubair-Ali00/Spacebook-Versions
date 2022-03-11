@@ -1,13 +1,14 @@
+// import the modules from react class
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-
+// import useRoute from the directory
 import { useRoute } from '@react-navigation/native'
-
+// import the classses from the specified directories
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger'
 import EditPost from '../components/editPost'
 import AddPost from '../components/addPost'
 import EditDraft from '../components/editDraft'
-
+// instantiate the CSS object
 const styles = StyleSheet.create({
   post: {
     width: '90%',

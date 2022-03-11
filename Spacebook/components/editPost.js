@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TextInput, View, Button, StyleSheet, Pressable } from 'react-native'
+import { Text, TextInput, View, StyleSheet, Pressable } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger'

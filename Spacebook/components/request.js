@@ -52,7 +52,7 @@ function request_user (id, token) {
   })
     .then((response) => response.text())
     .then((text) => {
-      if (text !== 'OK') {
+      if (text != 'OK') {
         Alert.alert(
           'Request',
           text, [{ text: 'OK' }]

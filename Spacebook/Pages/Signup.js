@@ -1,6 +1,7 @@
+// import the Modules and classes
 import React, { useState } from 'react'
 import { TextInput, Text, View, StatusBar, Alert, StyleSheet, Pressable } from 'react-native'
-
+// instantiate the CSS object
 const styles = StyleSheet.create({
   center: {
     backgroundColor: 'rgba(39, 154, 241, 0.98)',
