@@ -132,7 +132,7 @@ const AddFriends = ({ navigation }) => {
       abortController.abort()
     }
 
-    // refresh the page if search term changes or if the page refreshes
+    // refresh the page is search term changes or if the page refreshes
   }, [term, loadingT, route])
 
   return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TextInput, Text, View, Button, StatusBar, StyleSheet, Pressable } from 'react-native'
+import { TextInput, Text, View, StatusBar, StyleSheet, Pressable } from 'react-native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     // boxSizing: 'border-box',
     borderRadius: 10,
     marginTop: 20,
-    paddingHorizontal: '10%',
     paddingHorizontal: '10%',
     alignSelf: 'center'
   },
@@ -74,7 +73,7 @@ export default function Login ({ navigation }) {
 
         setAuth(CheckAuth)
 
-        // checks it user id is valid
+        // checks if user id is valid
         if (auth.id > 1) {
           navigation.reset({
             index: 0,

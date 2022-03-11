@@ -55,12 +55,16 @@ const styles = StyleSheet.create({
 
 function SpDraft (props) {
   const navigation = useNavigation()
+
+  // get user details and authentication credentials
   const [det, setDet] = useState([])
   const [auth, setAuth] = useState([])
 
+  // unsubscribe for useEffect
   const abortController = new AbortController()
 
-  const DeleteDraft = async () => {
+  // remove draft from local storage
+  const delete_draft = async () => {
     try {
       const data = await AsyncStorage.getItem('drafts')
       let arr = JSON.parse(data)
@@ -71,7 +75,8 @@ function SpDraft (props) {
     }
   }
 
-  const AddNewPost = () => {
+  // make new post based on draft
+  const add_post = () => {
     const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/post', {
       method: 'POST',
       headers: {
@@ -85,13 +90,14 @@ function SpDraft (props) {
     })
       .then((response) => response.text())
       .then((text) => {
-        DeleteDraft()
+        delete_draft()
       })
       .catch(function (res) {
         console.log(res)
       })
   }
 
+  // get user auth details (id and token)
   useEffect(() => {
     const getAuth = async () => {
       try {
@@ -110,6 +116,7 @@ function SpDraft (props) {
     }
   }, [])
 
+  // get user details
   useEffect(() => {
     const details = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + props.id, {
@@ -137,7 +144,6 @@ function SpDraft (props) {
   }, [])
 
   return (
-  // add function to get total posts from props.username
 
     <View style={styles.post}>
       <View style={styles.post1}>
@@ -181,11 +187,11 @@ function SpDraft (props) {
         >
           <Text>Edit</Text>
         </Pressable>
-        <Pressable style={[styles.button, { borderBottomEndRadius: 0, borderBottomStartRadius: 0 }]} onPress={() => AddNewPost()}>
+        <Pressable style={[styles.button, { borderBottomEndRadius: 0, borderBottomStartRadius: 0 }]} onPress={() => add_post()}>
           <Text>Post</Text>
         </Pressable>
 
-        <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeleteDraft()}>
+        <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_draft()}>
           <Text>Delete</Text>
         </Pressable>
 

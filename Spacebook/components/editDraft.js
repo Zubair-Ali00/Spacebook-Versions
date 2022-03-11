@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Text, TextInput, View, StyleSheet, Pressable } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Text, TextInput, View, Button, StyleSheet, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -73,24 +73,25 @@ function EditDraft (props) {
   const navigation = useNavigation()
   const [newtext, setNewtext] = useState('')
 
+  // get text from add post page
   const text = props.text
 
-  const FirstName = props.first_name
-  const LastName = props.last_name
+  // get user details
+  const first_name = props.first_name
+  const last_name = props.last_name
 
-  const UpdateDraft = async () => {
+  const update_draft = async () => {
     try {
+      // add updated draft to local storage
       const data = await AsyncStorage.getItem('drafts')
       const arr = JSON.parse(data)
-      console.log(arr)
+
       const index = arr.map(object => object.text).indexOf(text)
       arr[index].text = newtext
-      console.log(arr)
+
       await AsyncStorage.setItem('drafts', JSON.stringify(arr))
 
       navigation.goBack()
-
-      // var auth = JSON.parse(data)
     } catch (err) {
       console.log(err)
     }
@@ -106,7 +107,7 @@ function EditDraft (props) {
 
           <View style={styles.info}>
             <Text style={styles.text}>
-              {FirstName} {LastName}
+              {first_name} {last_name}
             </Text>
 
           </View>
@@ -147,7 +148,7 @@ function EditDraft (props) {
 
       <View>
 
-        <Pressable style={styles.button} onPress={() => UpdateDraft()}>
+        <Pressable style={styles.button} onPress={() => update_draft()}>
           <Text style={styles.pressText}>Update</Text>
         </Pressable>
 

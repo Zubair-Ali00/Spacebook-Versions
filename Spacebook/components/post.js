@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   }
 })
 
+// add new like to a post
 function like (author, post, token) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + author + '/post/' + post + '/like', {
     method: 'POST',
@@ -69,6 +70,7 @@ function like (author, post, token) {
     })
 }
 
+// remove one like from a post
 function dislike (author, post, token) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + author + '/post/' + post + '/like', {
     method: 'DELETE',
@@ -86,7 +88,8 @@ function dislike (author, post, token) {
     })
 }
 
-function DeletePost (user, post, token) {
+// delete post if the user is also the author
+function delete_post (user, post, token) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + user + '/post/' + post, {
     method: 'DELETE',
     headers: {
@@ -106,8 +109,11 @@ function DeletePost (user, post, token) {
 function spPost (props) {
   const navigation = useNavigation()
 
+  // unsubscribe form useEffect, file reader for raw to base 64 conversion
   const abortController = new AbortController()
   const fileReaderInstance = new FileReader()
+
+  // default loading image
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
 
   useEffect(() => {
@@ -122,7 +128,7 @@ function spPost (props) {
       })
         .then((response) => response.blob())
         .then((text) => {
-          // console.log(text)
+          // convert raw profile photo data to base 64
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result
@@ -141,13 +147,14 @@ function spPost (props) {
     }
   }, [])
 
-  let _like = false
-
+  // check if the posts is from the users page, if it is, only display delete , edit go to page buttons
   if (props.user === false) {
+    // check  who the author of the post is, if its the user, display delete and edit buttons
+    // if the post is not the user's, display like and dislike buttons
     if (props.author === props.user_id) {
-      _like = false
+      var _like = false
     } else {
-      _like = true
+      var _like = true
     }
 
     if (_like === true) {
@@ -261,7 +268,7 @@ function spPost (props) {
               <Text>Edit</Text>
             </Pressable>
 
-            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeletePost(props.friend, props.post, props.token)}>
+            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_post(props.friend, props.post, props.token)}>
               <Text>Delete</Text>
             </Pressable>
 
@@ -322,7 +329,7 @@ function spPost (props) {
             >
               <Text>Edit</Text>
             </Pressable>
-            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeletePost(props.author, props.post, props.token)}>
+            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_post(props.author, props.post, props.token)}>
               <Text>Delete</Text>
             </Pressable>
 
@@ -331,7 +338,6 @@ function spPost (props) {
       )
     } else {
       return (
-      // add function to get total posts from props.username
 
         <View style={styles.post}>
           <View style={styles.post1}>
@@ -377,7 +383,7 @@ function spPost (props) {
               <Text>Go to Page</Text>
             </Pressable>
 
-            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => DeletePost(props.author, props.post, props.token)}>
+            <Pressable style={[styles.button, { borderBottomEndRadius: 20, borderBottomStartRadius: 0 }]} onPress={() => delete_post(props.author, props.post, props.token)}>
               <Text>Delete</Text>
             </Pressable>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TextInput, View, StyleSheet, Pressable } from 'react-native'
+import { Text, TextInput, View, Button, StyleSheet, Pressable } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 
 import { getCurrentTimestamp } from 'react-native/Libraries/Utilities/createPerformanceLogger'
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
 function EditPost (props) {
   const navigation = useNavigation()
 
+  // container for previous post details
   const [post, setPost] = useState({
     post_id: '',
     text: '',
@@ -84,15 +85,19 @@ function EditPost (props) {
     },
     numLikes: 0
   })
+
+  // new text input
   const [text, setText] = useState('')
 
   const route = useRoute()
 
+  // get user and post details from params
   const id = route.params.user
   const postt = route.params.post
+
   useEffect(() => {
     const abortController = new AbortController()
-
+    // get previous post details
     const page = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post/' + postt, {
         method: 'GET',
@@ -118,7 +123,8 @@ function EditPost (props) {
     }
   }, [])
 
-  const UpdatePost = () => {
+  // upload new post text and timestamp
+  const update_post = () => {
     const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + id + '/post/' + postt, {
       method: 'PATCH',
       headers: {
@@ -141,7 +147,7 @@ function EditPost (props) {
     })
       .then((response) => response.text())
       .then((text) => {
-        // console.log(text)
+        // go back to main page or friends pages
         navigation.goBack()
       })
       .catch(function (res) {
@@ -200,7 +206,7 @@ function EditPost (props) {
 
       <View>
 
-        <Pressable style={styles.button} onPress={() => UpdatePost()}>
+        <Pressable style={styles.button} onPress={() => update_post()}>
           <Text style={styles.pressText}>Update</Text>
         </Pressable>
 

@@ -114,7 +114,7 @@ function ViewFriends ({ navigation }) {
   useEffect(() => {
   // ensures that the query term is empty if the serch text is 0
     if (term.length <= 0) {
-      term == ''
+      term === ''
     }
 
     const page = async () => {

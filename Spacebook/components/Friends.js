@@ -35,11 +35,16 @@ const styles = StyleSheet.create({
 })
 
 const SpFriend = (props) => {
+  // holds all the friends posts
   const [posts, SetPosts] = useState([])
 
+  // navigate to other pages
   const navigation = useNavigation()
+
+  // unsubscribe from useEffect
   const abortController = new AbortController()
 
+  // set total posts to 0
   let total = 0
 
   useEffect(() => {
@@ -55,6 +60,7 @@ const SpFriend = (props) => {
         .then((response) => response.json())
         .then((text) => {
           SetPosts(text)
+          setAuthed = true
         })
         .catch(function (res) {
           console.log(res)
@@ -68,19 +74,20 @@ const SpFriend = (props) => {
     }
   }, [])
 
-  // get total posts from user
   posts.map(() => {
     total = total + 1
-    return 0
   })
 
+  // loading image and converter to base 64
   const fileReaderInstance = new FileReader()
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
+
+  // if the user is authenticated
   const [authed, setAuthed] = useState(false)
-  setAuthed(false)
 
   useEffect(() => {
     const loadImage = async () => {
+      // fetch friends profile photo
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + props.user + '/photo', {
         method: 'GET',
         headers: {
@@ -91,6 +98,7 @@ const SpFriend = (props) => {
       })
         .then((response) => response.blob())
         .then((text) => {
+          // convert raw image data to base 64
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result

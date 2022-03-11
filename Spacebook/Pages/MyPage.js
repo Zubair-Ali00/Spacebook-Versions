@@ -268,7 +268,7 @@ function MyPage ({ route }) {
   };
 
   // returns to Login screen if auth object is lost
-  if (auth.token == 0) {
+  if (auth.token === 0) {
     navigation.reset({
       index: 0,
       routes: [{ name: 'Login' }]
@@ -317,7 +317,7 @@ function MyPage ({ route }) {
           <Pressable
             style={[styles.button, { marginLeft: 3, paddingLeft: 3 }]} onPress={() => {
               // refreshes the page by changing a value 'ref'
-              if (ref == true) {
+              if (ref === true) {
                 setRef(false)
               } else {
                 setRef(true)

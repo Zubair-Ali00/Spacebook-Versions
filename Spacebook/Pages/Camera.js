@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, Pressable, Image } from 'react-native'
+import { Text, TextInput, View, StyleSheet, Pressable, ScrollView, Image } from 'react-native'
+import { useRoute, useNavigation } from '@react-navigation/native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera } from 'expo-camera'
@@ -12,8 +13,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   camera: {
-    height: '70%',
-    width: '100%'
+    borderRadius: 20
   },
   center: {
     alignItems: 'center',
@@ -79,12 +79,15 @@ function changeImage (id, token, image) {
     })
 }
 
-function CameraPage ({ navigation }) {
+function CameraPage () {
   // used to unsubscribe form useEffect
   const abortController = new AbortController()
 
   // used to convert raw image received from server to base64
   const fileReaderInstance = new FileReader()
+
+  // to move between pages
+  const navigation = useNavigation()
 
   // set auth details
   const [auth, setAuth] = useState([])
@@ -112,11 +115,9 @@ function CameraPage ({ navigation }) {
 
   // set camera properties
   const [hasPermission, setHasPermission] = useState(false)
-  const [type, setType] = useState(Camera.Constants.Type.front)
-  setType(Camera.Constants.Type.front)
-  const [camera, setCamera] = useState()
+  const [type, setType] = useState(Camera.Constants.Type.back)
+  const [camera, setCamera] = useState(null)
 
-  // set the default camera image if there is none
   const [photo, setPhoto] = useState({
     height: 4224,
     uri: 'https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg',
@@ -129,8 +130,8 @@ function CameraPage ({ navigation }) {
   // request camera access
   useEffect(() => {
     (async () => {
-      const status = await Camera.requestCameraPermissionsAsync()
-      setHasPermission(status)
+      const { status } = await Camera.requestCameraPermissionsAsync()
+      setHasPermission(status === 'granted')
     })()
   }, [])
 
@@ -202,11 +203,7 @@ function CameraPage ({ navigation }) {
   }, [authed])
 
   // show no access text if the user has not granted access
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>
-  }
-
-  if (hasPermission) {
+  if (hasPermission === true) {
     return (
       <View style={styles.center}>
 
@@ -247,6 +244,9 @@ function CameraPage ({ navigation }) {
 
       </View>
     )
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>
   }
 }
 

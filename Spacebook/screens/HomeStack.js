@@ -1,9 +1,11 @@
 import React from 'react'
-import { TextInput, View, Button, StatusBar, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 
+// navigation containers
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+// import pages from Pages folder
 import MyPage from '../Pages/MyPage'
 import Signup from '../Pages/Signup'
 import Login from '../Pages/Login'
@@ -46,8 +48,9 @@ function HomeStack () {
         />
 
         <Stack.Screen
-          name='MyPage' options={{ title: 'My Page' }} component={MyPage}
+          name='MyPage' component={MyPage}
           options={{
+            title: 'My Page',
             headerStyle: {
               backgroundColor: '#237EC3'
             }

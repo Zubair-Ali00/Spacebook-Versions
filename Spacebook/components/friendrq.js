@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
 })
 
 const SpFriendrq = (props) => {
+  // accept friend request
   const accept = (id) => {
     const xhttp = fetch('http://localhost:3333/api/1.0.0/friendrequests/' + id, {
       method: 'POST',
@@ -65,7 +66,8 @@ const SpFriendrq = (props) => {
       })
   }
 
-  const DeleteRq = (id) => {
+  // delete friend request
+  const delete_rq = (id) => {
     const xhttp = fetch('http://localhost:3333/api/1.0.0/friendrequests/' + id, {
       method: 'DELETE',
       headers: {
@@ -81,13 +83,17 @@ const SpFriendrq = (props) => {
       })
   }
 
+  // used to convert image to base 64
   const fileReaderInstance = new FileReader()
+
+  // unsubscribe from useEffect
   const abortController = new AbortController()
 
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
 
   useEffect(() => {
     const loadImage = async () => {
+      // get user's profile image and convert is to base 64
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + props.id + '/photo', {
         method: 'GET',
         headers: {
@@ -98,7 +104,7 @@ const SpFriendrq = (props) => {
       })
         .then((response) => response.blob())
         .then((text) => {
-          // console.log(text)
+          // convert the image to base 64
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result
@@ -118,7 +124,6 @@ const SpFriendrq = (props) => {
   }, [])
 
   return (
-  // add function to get total posts from props.username
     <View style={[styles.post]} key={props.user_id}>
       <Image source={img} style={styles.image} />
       <View style={styles.text}>
@@ -129,7 +134,7 @@ const SpFriendrq = (props) => {
         <Text style={[styles.pressText, { color: 'black' }]}>Accept</Text>
       </Pressable>
 
-      <Pressable style={styles.button2} onPress={() => DeleteRq(props.id)}>
+      <Pressable style={styles.button2} onPress={() => delete_rq(props.id)}>
         <Text style={[styles.pressText, { color: 'black' }]}>Decline</Text>
       </Pressable>
 

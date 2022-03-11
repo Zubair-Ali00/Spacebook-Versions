@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     paddingHorizontal: '10%',
-    paddingHorizontal: '10%',
     alignSelf: 'center'
   },
   pressText: {
@@ -66,14 +65,22 @@ function Signup ({ navigation }) {
   // text to display when error occurs
   const [text, setText] = useState('')
 
+  const validateEmail = (email) => {
+    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/
+    if (reg.test(email) === false) {
+      setText('Email is Not Correct')
+    } else {
+      go()
+    }
+  }
+
   const check = () => {
-    // check if both password and confirm password are the same
     if (password !== cpassword) {
       setText('PASSWORDS DO NOT MATCH')
     } else if (password.length < 8) {
       setText('PASSWORDS NOT LONG ENOUGH')
     } else {
-      go()
+      validateEmail(email)
     }
   }
 
@@ -96,7 +103,7 @@ function Signup ({ navigation }) {
     })
       .then((response) => response.text())
       .then((text) => {
-        if (text == 'Bad Request - database error. Check the log. Possibly duplicate entry?') {
+        if (text === 'Bad Request - database error. Check the log. Possibly duplicate entry?') {
           setText('User Already exists')
         } else {
           Alert.alert(
@@ -157,7 +164,7 @@ function Signup ({ navigation }) {
           keyboardType='default'
         />
 
-        <Pressable style={styles.button} onPress={go}>
+        <Pressable style={styles.button} onPress={() => check()}>
           <Text style={styles.pressText}>Signup</Text>
         </Pressable>
 

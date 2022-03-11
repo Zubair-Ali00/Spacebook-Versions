@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
 })
 
 function SpHeader (props) {
+  // display profile image in header, the uri is passed down as a prop
   return (
     <View style={styles.center}>
       <Image source={props.img} style={styles.image} />

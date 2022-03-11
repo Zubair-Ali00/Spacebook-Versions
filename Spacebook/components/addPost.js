@@ -94,6 +94,7 @@ function AddPost (props) {
   const navigation = useNavigation()
   const abortController = new AbortController()
 
+  // holds post data
   const [post, setPost] = useState({
     post_id: '',
     text: '',
@@ -106,10 +107,13 @@ function AddPost (props) {
     },
     numLikes: 0
   })
+
+  // new post input
   const [text, setText] = useState('')
 
   const route = useRoute()
 
+  // get post id and user id
   const id = route.params.user
   const postt = route.params.post
 
@@ -164,6 +168,7 @@ function AddPost (props) {
   const fileReaderInstance = new FileReader()
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
 
+  // get user image, convert it to base64 from raw image data
   useEffect(() => {
     const loadImage = async () => {
       const xhttp = await fetch('http://localhost:3333/api/1.0.0/user/' + id + '/photo', {

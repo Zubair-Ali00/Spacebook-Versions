@@ -25,7 +25,7 @@ function MyPageStack () {
               : 'compass-outline'
           } else if (route.name === 'AddFriends') {
             iconName = focused ? 'add-circle-sharp' : 'add-circle-outline'
-          } else if (route.name == 'Requests') {
+          } else if (route.name === 'Requests') {
             iconName = focused ? 'file-tray' : 'file-tray-outline'
           }
 

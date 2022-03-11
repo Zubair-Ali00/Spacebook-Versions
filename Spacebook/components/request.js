@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
   }
 })
 
-function RequestUser (id, token) {
+// post friend request to user
+function request_user (id, token) {
   const xhttp = fetch('http://localhost:3333/api/1.0.0/user/' + id + '/friends', {
     method: 'POST',
     headers: {
@@ -64,7 +65,10 @@ function RequestUser (id, token) {
 }
 
 const SpRequest = (props) => {
+  // file reader used to convert raw image to base 64
   const fileReaderInstance = new FileReader()
+
+  // default image loading ong
   const [img, setImg] = useState('https://www.searchinfluence.com/wp-content/uploads/2015/10/buffering-youtube.jpg')
 
   useEffect(() => {
@@ -79,7 +83,7 @@ const SpRequest = (props) => {
       })
         .then((response) => response.blob())
         .then((text) => {
-          // console.log(text)
+          // convert raw image data to base 64
           fileReaderInstance.readAsDataURL(text)
           fileReaderInstance.onload = () => {
             const base64data = fileReaderInstance.result
@@ -101,7 +105,7 @@ const SpRequest = (props) => {
         <Text style={styles.text2}>{props.user_givenname} {props.user_familyname}</Text>
       </View>
 
-      <Pressable style={styles.button} onPress={() => RequestUser(props.user_id, props.token)}>
+      <Pressable style={styles.button} onPress={() => request_user(props.user_id, props.token)}>
         <Text style={[styles.pressText, { color: '#e86868' }]}>Request</Text>
       </Pressable>
 
